@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from jabberbot import JabberBot, botcmd
 import logging
-import logging.handlers
 import json
 import urllib2
 import htmllib
@@ -10,7 +9,6 @@ class MyJabberBot(JabberBot):
     def __init__(self, username, password, command_prefix = ''):
         super(MyJabberBot, self).__init__(username, password, command_prefix = command_prefix)
         self.log.addHandler(logging.StreamHandler())
-        self.log.addHandler(logging.handlers.SysLogHandler(address = '/dev/log'))
         self.log.setLevel(logging.DEBUG)
 
     @botcmd
