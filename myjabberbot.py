@@ -23,12 +23,12 @@ You can change the name of the main character by appending it as arguments: chuc
             if len(names) != 2:
                 return 'You must append one firstname and one lastname'
             url += '?firstName=%s&lastName=%s' % (names[0], names[1])
-            data = urllib2.urlopen(url)
-            parsedJson = json.load(data)
-            parser = htmllib.HTMLParser(None) # Escape HTML
-            parser.save_bgn()
-            parser.feed(parsedJson['value']['joke'])
-            return parser.save_end()
+        data = urllib2.urlopen(url)
+        parsedJson = json.load(data)
+        parser = htmllib.HTMLParser(None) # Escape HTML
+        parser.save_bgn()
+        parser.feed(parsedJson['value']['joke'])
+        return parser.save_end()
 
 if __name__ == '__main__':
     username = ''
