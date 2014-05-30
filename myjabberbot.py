@@ -15,7 +15,7 @@ class MyJabberBot(JabberBot):
     def chuck_norris(self, mess, args):
         """Displays a random Chuck Norris joke from http://icndb.com
 
-You can change the name of the main character by appending it as arguments: chuck_norris firstnam lastname
+You can change the name of the main character by appending it as arguments: chuck_norris firstname lastname
         """
         url = 'http://api.icndb.com/jokes/random'
         if args:
