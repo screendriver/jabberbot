@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 from jabberbot import JabberBot, botcmd
+from HTMLParser import HTMLParser
 import logging
-import json
-import urllib2
-import htmllib
+import requests
 
 class MyJabberBot(JabberBot):
     def __init__(self, username, password, command_prefix = ''):
@@ -18,18 +17,15 @@ class MyJabberBot(JabberBot):
 
 You can change the name of the main character by appending it as arguments: chuck_norris firstname lastname
         """
-        url = 'http://api.icndb.com/jokes/random'
+        params = None
         if args:
             names = args.split(' ')
             if len(names) != 2:
                 return 'You must append one firstname and one lastname'
-            url += '?firstName=%s&lastName=%s' % (names[0], names[1])
-        data = urllib2.urlopen(url)
-        parsedJson = json.load(data)
-        parser = htmllib.HTMLParser(None) # Escape HTML
-        parser.save_bgn()
-        parser.feed(parsedJson['value']['joke'])
-        return parser.save_end()
+            params = {'firstName': names[0], 'lastName': names[1]}
+        request = requests.get('http://api.icndb.com/jokes/random', params = params)
+        joke = request.json()['value']['joke']
+        return HTMLParser().unescape(joke)
 
 if __name__ == '__main__':
     username = ''
