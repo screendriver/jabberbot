@@ -42,7 +42,8 @@ shorturl http://myurl.com
                 'format': 'json'}
         request = requests.get(self._shorturl_url, params = params)
         if request.status_code == requests.codes.ok:
-            return request.json()['shorturl']
+            json = request.json()
+            return '%s: %s' % (json['title'], json['shorturl'])
         return 'Something went wrong :('
 
 if __name__ == '__main__':
