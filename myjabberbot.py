@@ -8,6 +8,7 @@ import htmllib
 class MyJabberBot(JabberBot):
     def __init__(self, username, password, command_prefix = ''):
         super(MyJabberBot, self).__init__(username, password, command_prefix = command_prefix)
+        self.PING_FREQUENCY = 300
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(logging.DEBUG)
 
