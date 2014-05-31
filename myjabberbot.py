@@ -19,6 +19,7 @@ class MyJabberBot(JabberBot):
 
 You can optionally change the name of the main character by appending it as arguments: chuck_norris firstname lastname
         """
+        params = None
         if args:
             names = args.split(' ')
             if len(names) != 2:
