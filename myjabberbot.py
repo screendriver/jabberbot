@@ -95,7 +95,10 @@ You have to provide a subject: vote_start <the subject>
     def vote_stat(self, mess, args):
         """Displays statistics for the current voting"""
         if self._vote_subject:
-            return 'Subject: "%s". Votes up: %d. Votes down: %d' % (self._vote_subject, len(self._votes_up), len(self._votes_down))
+            return 'Subject: "%s". Votes up: %d. Votes down: %d' % (
+                    self._vote_subject,
+                    len(self._votes_up),
+                    len(self._votes_down))
         return self._NO_VOTINGS_MESSAGE
 
     @botcmd
@@ -103,7 +106,10 @@ You have to provide a subject: vote_start <the subject>
         """Ends the current voting and shows the result"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
-        result = 'Voting "%s" ended. %d votes up. %d votes down' % (self._vote_subject, len(self._votes_up), len(self._votes_down))
+        result = 'Voting "%s" ended. %d votes up. %d votes down' % (
+                self._vote_subject,
+                len(self._votes_up),
+                len(self._votes_down))
         self._vote_subject = None
         self._votes_up.clear()
         self._votes_down.clear()
