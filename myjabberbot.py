@@ -126,7 +126,10 @@ You have to provide a subject: vote_start <subject>
 
 Simply type: !slap <nick> an it will slap the person
         """
-        return slapper.slap(args)
+        try:
+            return '/me ' + slapper.slap(args)
+        except ValueError, e:
+            return e.message
 
 if __name__ == '__main__':
     username = ''
