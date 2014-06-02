@@ -1,0 +1,69 @@
+breaks a bottle on %(nick)s's head
+hits %(nick)s with every goldbar in fort knox
+hugs %(nick)s with a rather large squid
+waves at %(nick)s with a hydraulic pump
+slaps %(nick)s with a book by Stephen King
+inserts a 10mbit isa network card in %(nick)s
+slaps %(nick)s totally with a ladies handbag
+throws %(nick)s to a football team
+pours a bag of Cheerios into %(nick)s
+slaps %(nick)s with a hat
+slaps %(nick)s with the back hand
+throws a computer monitor at %(nick)s
+breaks a coconut open on %(nick)s's head
+yells at %(nick)s with a microfone
+breaks %(nick)s's cellphone with a dwarven axe
+hits %(nick)s with a stone
+throws a spiked club at %(nick)s
+slaps %(nick)s with a small asteroid, rich in iron
+hits %(nick)s with a small interstellar spaceship
+smears %(nick)s with a fresh zuccini
+slaps %(nick)s with a laptop
+hits %(nick)s with a big dictionary
+throws a baseball bat at %(nick)s
+kills %(nick)s with a mIRC script
+rubs %(nick)s with a tortoise
+kicks %(nick)s with a horse
+hits %(nick)s with the book of Kells
+feeds %(nick)s to a whale
+slaps %(nick)s with the New York Times Sunday Edition
+bites %(nick)s with a gnarly werewolf
+bites %(nick)s with a vampire
+puts %(nick)s into a perl script
+feeds %(nick)s with a bag of doggie chow
+slaps %(nick)s with a fat walrus
+hits %(nick)s with an IP address
+prays %(nick)s with a catholic priest
+slaps %(nick)s with James Dean
+throws %(nick)s to Ronald MacDonald
+runs %(nick)s trough Autoconf version 2.13
+slaps %(nick)s with a PRIVMSG
+spams %(nick)s's email address
+draws %(nick)s with some ANSI color codes
+attacks %(nick)s with a thermonuclear weapon
+reads to %(nick)s the hitch hikers guide to the galaxy, revised edition
+plays with %(nick)s and Nessie, the Loch Ness monster
+slaps %(nick)s with a tuna. Still in the can! *BONK* That will leave a mark
+burns %(nick)s with a red chinese dragon
+smears %(nick)s with a bird shit
+pours a tuborg super light beer down the throat on %(nick)s
+blows %(nick)s up with 1 ton of c4
+kills %(nick)s with the answer to everything
+blows %(nick)s away with a sandstorm
+jumps on %(nick)s with king kong
+bites %(nick)s with a donkey
+lets %(nick)s disappear into a black hole
+slaps %(nick)s with pure nothing
+stabs %(nick)s with a key
+slaps %(nick)s with an elevator
+chokes %(nick)s with a smiley printed in china
+hands %(nick)s a microsoft book
+slaps %(nick)s with a IPv6 IP address
+makes %(nick)s unstable with a 2.5 kernel
+slaps %(nick)s with bill gates wallet
+hugs %(nick)s with a carebear
+wraps %(nick)s with a 42m long worm
+smacks %(nick)s with Redhat 7
+slaps %(nick)s with Windows Update
+burries %(nick)s under an apple tree
+stings %(nick)s with all bees from a beehive

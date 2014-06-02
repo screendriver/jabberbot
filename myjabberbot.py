@@ -3,6 +3,8 @@ from jabberbot import JabberBot, botcmd
 from HTMLParser import HTMLParser
 import logging
 import requests
+import random
+import slapper
 
 class MyJabberBot(JabberBot):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
@@ -14,6 +16,7 @@ class MyJabberBot(JabberBot):
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
+        self._slaps = ()
         self.PING_FREQUENCY = 300
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(logging.DEBUG)
@@ -22,7 +25,9 @@ class MyJabberBot(JabberBot):
     def chuck_norris(self, mess, args):
         """Displays a random Chuck Norris joke from http://icndb.com
 
-You can optionally change the name of the main character by appending it as arguments: chuck_norris firstname lastname
+You can optionally change the name of the main character by appending it as arguments: 
+chuck_norris
+firstname lastname
         """
         params = None
         if args:
@@ -56,12 +61,12 @@ shorturl http://myurl.com
     def vote_start(self, mess, args):
         """Starts a voting
 
-You have to provide a subject: vote_start <the subject>
+You have to provide a subject: vote_start <subject>
         """
-        if (self._vote_subject):
+        if self._vote_subject:
             return 'A vote is already running'
-        if (args == ''):
-            return 'No subject given'
+        if not args:
+            return 'No subject given. Use vote_start <subject>'
         self._vote_subject = args
         return 'Voting started'
 
@@ -114,6 +119,14 @@ You have to provide a subject: vote_start <the subject>
         self._votes_up.clear()
         self._votes_down.clear()
         return result
+
+    @botcmd
+    def slap(self, mess, args):
+        """Slaps the given user
+
+Simply type: !slap <nick> an it will slap the person
+        """
+        return slapper.slap(args)
 
 if __name__ == '__main__':
     username = ''
