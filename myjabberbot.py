@@ -43,7 +43,7 @@ firstname lastname
 
     @botcmd
     def shorturl(self, mess, args):
-        """Shorten a URL with the echooff URL shortener
+        """Shorten a URL with the http://kurzma.ch URL shortener
 
 shorturl http://myurl.com
         """
