@@ -5,11 +5,12 @@ import logging
 import requests
 import random
 import slapper
+import pyimgur
 
 class MyJabberBot(JabberBot):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
 
-    def __init__(self, username, password, shorturl_url, shorturl_signature):
+    def __init__(self, username, password, shorturl_url, shorturl_signature, imgur_client_id):
         super(MyJabberBot, self).__init__(username, password, command_prefix = '!')
         self._shorturl_url = shorturl_url
         self._shorturl_signature = shorturl_signature
@@ -17,6 +18,7 @@ class MyJabberBot(JabberBot):
         self._votes_up = set()
         self._votes_down = set()
         self._slaps = ()
+        self._imgur = pyimgur.Imgur(imgur_client_id)
         self.PING_FREQUENCY = 300
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(logging.DEBUG)
@@ -131,14 +133,22 @@ Simply type: !slap <nick> an it will slap the person
         except ValueError, e:
             return e.message
 
+    @botcmd
+    def imgur(self, mess, args):
+        """Gets a random imgur image"""
+        gallery = self._imgur.get_gallery(limit = 30)
+        image = random.choice(gallery)
+        return '%s: %s' % (image.title, image.link)
+
 if __name__ == '__main__':
     username = ''
     password = ''
     shorturl_url = ''
     shorturl_signature = ''
+    imgur_client_id = ''
     nickname = ''
     chatroom = ''
 
-    bot = MyJabberBot(username, password, shorturl_url, shorturl_signature)
+    bot = MyJabberBot(username, password, shorturl_url, shorturl_signature, imgur_client_id)
     bot.join_room(chatroom, nickname)
     bot.serve_forever()
