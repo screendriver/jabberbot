@@ -3,7 +3,6 @@ from jabberbot import JabberBot, botcmd
 from HTMLParser import HTMLParser
 import logging
 import requests
-import random
 import slapper
 import pyimgur
 
@@ -27,7 +26,7 @@ class MyJabberBot(JabberBot):
         return '\nSource code available at http://kurzma.ch/botsrc'
 
     @botcmd
-    def chuck_norris(self, mess, args):
+    def chuck(self, mess, args):
         """Displays a random Chuck Norris joke from http://icndb.com
 
 You can optionally change the name of the main character by appending it as arguments: 
@@ -45,7 +44,7 @@ firstname lastname
         return HTMLParser().unescape(joke)
 
     @botcmd
-    def shorturl(self, mess, args):
+    def surl(self, mess, args):
         """Shorten a URL with the http://kurzma.ch URL shortener
 
 shorturl http://myurl.com
@@ -63,7 +62,7 @@ shorturl http://myurl.com
         return 'Something went wrong :('
 
     @botcmd
-    def vote_start(self, mess, args):
+    def vstart(self, mess, args):
         """Starts a voting
 
 You have to provide a subject: vote_start <subject>
@@ -76,7 +75,7 @@ You have to provide a subject: vote_start <subject>
         return 'Voting started'
 
     @botcmd
-    def vote_up(self, mess, args):
+    def vup(self, mess, args):
         """Vote up for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
@@ -89,7 +88,7 @@ You have to provide a subject: vote_start <subject>
         return 'Thank you for your vote %s' % jid
 
     @botcmd
-    def vote_down(self, mess, args):
+    def vdown(self, mess, args):
         """Vote down for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
@@ -102,7 +101,7 @@ You have to provide a subject: vote_start <subject>
         return '%s voted down' % jid
 
     @botcmd
-    def vote_stat(self, mess, args):
+    def vstat(self, mess, args):
         """Displays statistics for the current voting"""
         if self._vote_subject:
             return 'Subject: "%s". Votes up: %d. Votes down: %d' % (
@@ -112,7 +111,7 @@ You have to provide a subject: vote_start <subject>
         return self._NO_VOTINGS_MESSAGE
 
     @botcmd
-    def vote_end(self, mess, args):
+    def vend(self, mess, args):
         """Ends the current voting and shows the result"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
