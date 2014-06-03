@@ -23,6 +23,9 @@ class MyJabberBot(JabberBot):
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(logging.DEBUG)
 
+    def bottom_of_help_message(self):
+        return '\nSource code available at http://kurzma.ch/botsrc'
+
     @botcmd
     def chuck_norris(self, mess, args):
         """Displays a random Chuck Norris joke from http://icndb.com
