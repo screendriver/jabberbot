@@ -139,8 +139,7 @@ Simply type: !slap <nick> an it will slap the person
     @botcmd
     def imgur(self, mess, args):
         """Gets a random image from http://imgur.com"""
-        gallery = self._imgur.get_gallery(limit = 30)
-        image = random.choice(gallery)
+        image = self._imgur.get_random_gallery_image(limit = 1)[0]
         return '%s: %s' % (image.title, image.link)
 
 if __name__ == '__main__':
