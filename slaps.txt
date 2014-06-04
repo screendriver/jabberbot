@@ -76,3 +76,4 @@ geh her, hoi da dei Pflichtwatschn ab %(nick)s!
 lässt für %(nick)s den Watschnbaum umfallen
 gibt %(nick)s a Bockfotzn
 findet %(nick)s is a Bockfotzngsicht
+haut %(nick)s auf d' Goschn
