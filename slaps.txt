@@ -73,3 +73,4 @@ reißt für %(nick)s a Packl Fotzn auf
 betoniert %(nick)s erst amoi oane
 streicht %(nick)s oane auf
 geh her, hoi da dei Pflichtwatschn ab %(nick)s!
+lässt für %(nick)s den Watschnbaum umfallen
