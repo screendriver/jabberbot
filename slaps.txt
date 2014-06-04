@@ -67,3 +67,8 @@ smacks %(nick)s with Redhat 7
 slaps %(nick)s with Windows Update
 burries %(nick)s under an apple tree
 stings %(nick)s with all bees from a beehive
+erteilt %(nick)s a Pflichtwatschn
+gibt %(nick)s a Gnackfotzn
+reißt für %(nick)s a Packl Fotzn auf
+betoniert %(nick)s erst amoi oane
+streicht %(nick)s oane auf
