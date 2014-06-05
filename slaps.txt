@@ -72,7 +72,7 @@ gibt %(nick)s a Gnackfotzn
 reißt für %(nick)s a Packl Fotzn auf
 betoniert %(nick)s erst amoi oane
 streicht %(nick)s oane auf
-geh her, hoi da dei Pflichtwatschn ab %(nick)s!
+kann die Pflichtwatschn für %(nick)s nimmer festhoitn. *klatsch*
 lässt für %(nick)s den Watschnbaum umfallen
 gibt %(nick)s a Bockfotzn
 findet %(nick)s is a Bockfotzngsicht
