@@ -84,26 +84,26 @@ You have to provide a subject: vote_start <subject>
         """Vote up for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
-        jid = mess.getFrom().getResource()
-        if jid in self._votes_up:
-            return 'You already voted %s' % jid
-        if jid in self._votes_down:
-            self._votes_down.remove(jid)
-        self._votes_up.add(jid)
-        return 'Thank you for your vote %s' % jid
+        user = self.get_sender_username(mess)
+        if user in self._votes_up:
+            return 'You already voted %s' % user
+        if user in self._votes_down:
+            self._votes_down.remove(user)
+        self._votes_up.add(user)
+        return 'Thank you for your vote %s' % user
 
     @botcmd
     def vdown(self, mess, args):
         """Vote down for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
-        jid = mess.getFrom().getResource()
-        if jid in self._votes_down:
+        user = self.get_sender_username(mess)
+        if user in self._votes_down:
             return 'You already voted down'
-        if jid in self._votes_up:
-            self._votes_up.remove(jid)
-        self._votes_down.add(jid)
-        return '%s voted down' % jid
+        if user in self._votes_up:
+            self._votes_up.remove(user)
+        self._votes_down.add(user)
+        return '%s voted down' % user
 
     @botcmd
     def vstat(self, mess, args):
