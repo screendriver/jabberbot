@@ -77,3 +77,4 @@ lässt für %(nick)s den Watschnbaum umfallen
 gibt %(nick)s a Bockfotzn
 findet dass %(nick)s a Bockfotzngsicht is
 haut %(nick)s auf d' Goschn
+streicht %(nick)s oane auf, die er ned so schnei vergisst 
