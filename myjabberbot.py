@@ -146,6 +146,11 @@ Simply type: !slap <nick> an it will slap the person
         image = self._imgur.get_random_gallery_image(limit = 1)[0]
         return '%s: %s' % (image.title, image.link)
 
+    @botcmd
+    def meal(self, mess, args):
+        """Displays a 'enjoy your meal' message"""
+        return 'Guten Appetit'
+
 if __name__ == '__main__':
     username = ''
     password = ''
