@@ -26,6 +26,11 @@ class MyJabberBot(JabberBot):
         return '\nSource code available at http://kurzma.ch/botsrc'
 
     @botcmd
+    def help(self, mess, args):
+        help_text = super(MyJabberBot, self).help(mess, args)
+        self.send_simple_reply(mess, help_text, True)
+
+    @botcmd
     def chuck(self, mess, args):
         """Displays a random Chuck Norris joke from http://icndb.com
 
