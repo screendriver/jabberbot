@@ -151,6 +151,11 @@ Simply type: !slap <nick> an it will slap the person
         """Displays a 'enjoy your meal' message"""
         return 'Guten Appetit'
 
+    @botcmd
+    def hug(self, mess, args):
+        """Hugs the given user"""
+        return '/me hugs %s' % args
+
 if __name__ == '__main__':
     username = ''
     password = ''
