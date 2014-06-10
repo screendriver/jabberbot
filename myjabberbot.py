@@ -156,6 +156,21 @@ Simply type: !slap <nick> an it will slap the person
         """Hugs the given user"""
         return '/me hugs %s' % args
 
+    @botcmd
+    def kiss(self, mess, args):
+        """Kisses the given user
+        
+You can optionally specify the part of the body: kiss <nick> <part of body>
+        """
+        arguments = args.split(' ')
+        args_len = len(arguments)
+        if args_len == 1:
+            return '/me kisses %s :-*' % arguments[0]
+        elif args_len == 2:
+            return '/me kisses %s on the %s :-*' % (arguments[0], arguments[1])
+        else:
+            return 'Too many arguments'
+
 if __name__ == '__main__':
     username = ''
     password = ''
