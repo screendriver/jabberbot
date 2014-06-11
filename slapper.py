@@ -11,4 +11,4 @@ def slap(nick):
     filepath = os.path.join(dirpath, 'slaps.txt')
     with open(filepath) as f:
         slaps = tuple(slap.strip() for slap in f)
-        return random.choice(slaps) % {'nick': nick}
+        return random.choice(slaps).format(nick=nick)
