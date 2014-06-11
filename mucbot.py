@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import inspect
 import logging
 import os
@@ -13,7 +14,7 @@ class MUCBot(ClientXMPP):
     _CMD_PREFIX = '!'
 
     def __init__(self, jid, password, shorturl_url, shorturl_signature,
-                 imgur_client_id, room, nick):
+                 room, nick):
         super().__init__(jid, password)
         self._shorturl_url = shorturl_url
         self._shorturl_signature = shorturl_signature
@@ -235,16 +236,17 @@ You can optionally specify the part of the body: kiss <nick> <part of body>
             return 'Too many arguments'
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('jid', help='the JID of the bot')
+    parser.add_argument('pwd', help='the password for the given JID')
+    parser.add_argument('surl_api', help='the API URL to the URL shortener')
+    parser.add_argument('surl_sig', help='the signaturen for the URL shortener')
+    parser.add_argument('muc_room', help='the MUC room to join')
+    parser.add_argument('muc_nick', help='the nick name that should be used')
+    args = parser.parse_args()
     logging.basicConfig(level=logging.ERROR,
                         format='%(levelname)-8s %(message)s')
-    jid = ''
-    password = ''
-    shorturl_url = ''
-    shorturl_signature = ''
-    imgur_client_id = ''
-    room = ''
-    nick = ''
-    bot = MUCBot(jid, password, shorturl_url, shorturl_signature,
-                 imgur_client_id, room, nick)
+    bot = MUCBot(args.jid, args.pwd, args.surl_api,
+            args.surl_sig, args.muc_room, args.muc_nick)
     bot.connect()
     bot.process(block=True)
