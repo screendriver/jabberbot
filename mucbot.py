@@ -6,6 +6,7 @@ import os
 import requests
 from html.parser import HTMLParser
 
+import feedparser
 import slapper
 from sleekxmpp import ClientXMPP
 
@@ -26,7 +27,8 @@ class MUCBot(ClientXMPP):
         self._nick = nick
         self._cmds = {'help': self._help,
                 'chuck': self._chuck_norris,
-                'surl': self._shorten_url}
+                'surl': self._shorten_url,
+                'wiki': self._wikipedia}
         self._muc_cmds = {'help': self._help,
                 'chuck': self._chuck_norris,
                 'surl': self._shorten_url,
@@ -38,7 +40,8 @@ class MUCBot(ClientXMPP):
                 'slap': self._slap,
                 'meal': self._meal,
                 'hug': self._hug,
-                'kiss': self._kiss}
+                'kiss': self._kiss,
+                'wiki': self._wikipedia}
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
         self.register_plugin('xep_0045')
@@ -123,7 +126,7 @@ chuck <firstname> <lastname>
         joke = request.json()['value']['joke']
         return HTMLParser().unescape(joke)
 
-    def _shorten_url(self, mess, args):
+    def _shorten_url(self, msg, args):
         """Shorten a URL with the http://kurzma.ch URL shortener
 
 shorturl http://myurl.com
@@ -140,7 +143,7 @@ shorturl http://myurl.com
             return '{}: {}'.format(json['title'], json['shorturl'])
         return 'Something went wrong :('
 
-    def _vote_start(self, mess, args):
+    def _vote_start(self, msg, args):
         """Starts a voting
 
 You have to provide a subject: vstart <subject>
@@ -152,11 +155,11 @@ You have to provide a subject: vstart <subject>
         self._vote_subject = ' '.join(args)
         return 'Voting started'
 
-    def _vote_up(self, mess, args):
+    def _vote_up(self, msg, args):
         """Vote up for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
-        user = mess['from'].resource
+        user = msg['from'].resource
         if user in self._votes_up:
             return 'You already voted {}'.format(user)
         if user in self._votes_down:
@@ -164,11 +167,11 @@ You have to provide a subject: vstart <subject>
         self._votes_up.add(user)
         return '{} voted up'.format(user)
 
-    def _vote_down(self, mess, args):
+    def _vote_down(self, msg, args):
         """Vote down for the current voting"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
-        user = mess['from'].resource
+        user = msg['from'].resource
         if user in self._votes_down:
             return 'You already voted down'
         if user in self._votes_up:
@@ -176,7 +179,7 @@ You have to provide a subject: vstart <subject>
         self._votes_down.add(user)
         return '{} voted down'.format(user)
 
-    def _vote_stat(self, mess, args):
+    def _vote_stat(self, msg, args):
         """Displays statistics for the current voting"""
         if self._vote_subject:
             return 'Subject: "{}". Votes up: {:d}. Votes down: {:d}'.format(
@@ -185,7 +188,7 @@ You have to provide a subject: vstart <subject>
                     len(self._votes_down))
         return self._NO_VOTINGS_MESSAGE
 
-    def _vote_end(self, mess, args):
+    def _vote_end(self, msg, args):
         """Ends the current voting and shows the result"""
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
@@ -198,7 +201,7 @@ You have to provide a subject: vstart <subject>
         self._votes_down.clear()
         return result
 
-    def _slap(self, mess, args):
+    def _slap(self, msg, args):
         """Slaps the given user
 
 Simply type: !slap <nick> an it will slap the person
@@ -209,18 +212,18 @@ Simply type: !slap <nick> an it will slap the person
             return str(e)
         return '{}: {}'.format(image.title, image.link)
 
-    def _meal(self, mess, args):
+    def _meal(self, msg, args):
         """Displays a 'enjoy your meal' message"""
         return 'Guten Appetit'
 
-    def _hug(self, mess, args):
+    def _hug(self, msg, args):
         """Hugs the given user"""
         if args:
             return '/me hugs {}'.format(' '.join(args))
         else:
             return 'Who should I hug?'
 
-    def _kiss(self, mess, args):
+    def _kiss(self, msg, args):
         """Kisses the given user
 
 You can optionally specify the part of the body: kiss <nick> <part of body>
@@ -234,6 +237,30 @@ You can optionally specify the part of the body: kiss <nick> <part of body>
             return '/me kisses {} on the {} :-*'.format(args[0], args[1])
         else:
             return 'Too many arguments'
+
+    def _wikipedia(self, msg, args):
+        """Displays a random page from the german Wikipedia
+
+You can display today's featured article: wiki today
+        """
+        if 'today' in args:
+            url = 'https://de.wikipedia.org/w/api.php?action=featuredfeed&feed=featured'
+            feed = feedparser.parse(url)
+            today = feed['items'][-1]
+            return self._shorten_url(msg, today['link'])
+        params = {'action': 'query',
+                'format': 'json',
+                'generator': 'random',
+                'grnnamespace': 0,
+                'grnlimit': 1,
+                'prop': 'info',
+                'inprop': 'url'}
+        req = requests.get('http://de.wikipedia.org/w/api.php', params=params)
+        json = req.json()
+        pages = json['query']['pages']
+        page = list(pages.values())[0]
+        url = self._shorten_url(msg, page['fullurl'])
+        return '{}'.format(url)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
