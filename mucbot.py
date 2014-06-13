@@ -43,7 +43,8 @@ class MUCBot(ClientXMPP):
                           'hug': self._hug,
                           'kiss': self._kiss,
                           'wiki': self._wikipedia,
-                          'taunt': self._taunt}
+                          'taunt': self._taunt,
+                          'bday': self._birthday}
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
         self.register_plugin('xep_0045')
@@ -281,6 +282,15 @@ You can display today's featured article: wiki today
         joke = random.choice(jokes)
         nick = "{}'s".format(' '.join(args)) if args else 'Deine'
         return joke.format(nick=nick)
+
+    def _birthday(self, msg, *args):
+        """Sends a happy birthday greeting
+        
+You can add a nickname: bday <nick>
+        """
+        if args:
+            return 'Alles gute zum Geburtstag @{}'.format(' '.join(args))
+        return 'Alles gute zum Geburtstag'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
