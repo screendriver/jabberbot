@@ -11,7 +11,7 @@ slaps {nick} with a hat
 slaps {nick} with the back hand
 throws a computer monitor at {nick}
 breaks a coconut open on {nick}'s head
-yells at {nick} with a microfone
+yells at {nick} with a megaphone
 breaks {nick}'s cellphone with a dwarven axe
 hits {nick} with a stone
 throws a spiked club at {nick}
