@@ -14,8 +14,8 @@ class MUCBot(ClientXMPP):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
     _CMD_PREFIX = '!'
 
-    def __init__(self, jid, password, shorturl_url, shorturl_signature,
-                 room, nick):
+    def __init__(self, jid, password, shorturl_url,
+                 shorturl_signature, room, nick):
         super().__init__(jid, password)
         self._shorturl_url = shorturl_url
         self._shorturl_signature = shorturl_signature
@@ -105,7 +105,8 @@ class MUCBot(ClientXMPP):
                     continue
                 lines = doc.splitlines()
                 docs.append('{}{}: {}'.format(self._CMD_PREFIX, cmd, lines[0]))
-            bottom = '{0}Type !help <command name> to get more info about that specific command.'.format(os.linesep)
+            bottom = ('{0}Type !help <command name> to get more info '
+                      'about that specific command.').format(os.linesep)
             docs.append(bottom)
         src = 'Source code available at http://kurzma.ch/botsrc'
         docs.append(src)
@@ -114,15 +115,16 @@ class MUCBot(ClientXMPP):
     def _chuck_norris(self, msg, args):
         """Displays a random Chuck Norris joke from http://icndb.com
 
-You can optionally change the name of the main character by appending him as arguments: 
-chuck <firstname> <lastname>
+You can optionally change the name of the main character by appending \
+him as arguments: chuck <firstname> <lastname>
         """
         params = None
         if args:
             if len(args) != 2:
                 return 'You must append a firstname *and* a lastname'
             params = {'firstName': args[0], 'lastName': args[1]}
-        request = requests.get('http://api.icndb.com/jokes/random', params = params)
+        request = requests.get('http://api.icndb.com/jokes/random',
+                               params = params)
         joke = request.json()['value']['joke']
         return HTMLParser().unescape(joke)
 
@@ -183,9 +185,9 @@ You have to provide a subject: vstart <subject>
         """Displays statistics for the current voting"""
         if self._vote_subject:
             return 'Subject: "{}". Votes up: {:d}. Votes down: {:d}'.format(
-                    self._vote_subject,
-                    len(self._votes_up),
-                    len(self._votes_down))
+                       self._vote_subject,
+                       len(self._votes_up),
+                       len(self._votes_down))
         return self._NO_VOTINGS_MESSAGE
 
     def _vote_end(self, msg, args):
@@ -193,9 +195,9 @@ You have to provide a subject: vstart <subject>
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
         result = 'Voting "{}" ended. {:d} votes up. {:d} votes down'.format(
-                self._vote_subject,
-                len(self._votes_up),
-                len(self._votes_down))
+                     self._vote_subject,
+                     len(self._votes_up),
+                     len(self._votes_down))
         self._vote_subject = None
         self._votes_up.clear()
         self._votes_down.clear()
@@ -226,7 +228,8 @@ Simply type: !slap <nick> an it will slap the person
     def _kiss(self, msg, args):
         """Kisses the given user
 
-You can optionally specify the part of the body: kiss <nick> <part of body>
+You can optionally specify the part of the body: \
+kiss <nick> <part of body>
         """
         args_len = len(args)
         if not args:
@@ -244,7 +247,8 @@ You can optionally specify the part of the body: kiss <nick> <part of body>
 You can display today's featured article: wiki today
         """
         if 'today' in args:
-            url = 'https://de.wikipedia.org/w/api.php?action=featuredfeed&feed=featured'
+            url = ('https://de.wikipedia.org/w/api.php'
+                   '?action=featuredfeed&feed=featured')
             feed = feedparser.parse(url)
             today = feed['items'][-1]
             return self._shorten_url(msg, today['link'])
@@ -264,16 +268,22 @@ You can display today's featured article: wiki today
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('jid', help='the JID of the bot')
-    parser.add_argument('pwd', help='the password for the given JID')
-    parser.add_argument('surl_api', help='the API URL to the URL shortener')
-    parser.add_argument('surl_sig', help='the signaturen for the URL shortener')
-    parser.add_argument('muc_room', help='the MUC room to join')
-    parser.add_argument('muc_nick', help='the nick name that should be used')
+    parser.add_argument('jid',
+                        help='the JID of the bot')
+    parser.add_argument('pwd',
+                        help='the password for the given JID')
+    parser.add_argument('surl_api',
+                        help='the API URL to the URL shortener')
+    parser.add_argument('surl_sig',
+                         help='the signaturen for the URL shortener')
+    parser.add_argument('muc_room',
+                        help='the MUC room to join')
+    parser.add_argument('muc_nick',
+                        help='the nick name that should be used')
     args = parser.parse_args()
     logging.basicConfig(level=logging.ERROR,
                         format='%(levelname)-8s %(message)s')
     bot = MUCBot(args.jid, args.pwd, args.surl_api,
-            args.surl_sig, args.muc_room, args.muc_nick)
+                 args.surl_sig, args.muc_room, args.muc_nick)
     bot.connect()
     bot.process(block=True)
