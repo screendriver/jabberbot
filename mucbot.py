@@ -8,6 +8,7 @@ import requests
 from html.parser import HTMLParser
 
 import feedparser
+from mstranslator import Translator
 from sleekxmpp import ClientXMPP
 
 class MUCBot(ClientXMPP):
@@ -15,7 +16,8 @@ class MUCBot(ClientXMPP):
     _CMD_PREFIX = '!'
 
     def __init__(self, jid, password, surl_api,
-                 surl_sig, muc_room, muc_nick):
+                 surl_sig, muc_room, muc_nick,
+                 trans_client_id, trans_client_sec):
         super().__init__(jid, password)
         self._surl_api = surl_api
         self._surl_sig = surl_sig
@@ -25,6 +27,7 @@ class MUCBot(ClientXMPP):
         self._slaps = ()
         self._muc_room = muc_room
         self._muc_nick = muc_nick
+        self._translator = Translator(trans_client_id, trans_client_sec)
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
@@ -222,8 +225,11 @@ Simply type: !slap <nick> an it will slap the person
             return '/me {}'.format(slap)
 
     def _meal(self, msg, *args):
-        """Displays a 'enjoy your meal' message"""
-        return 'Guten Appetit'
+        """Displays a 'enjoy your meal' message in a random language"""
+        rand_lang = self._get_random_lang()
+        meal = 'Enjoy your meal'
+        translated = self._translator.translate(meal, lang_to=rand_lang[0])
+        return '{} (translated in {})'.format(translated, rand_lang[1])
 
     def _hug(self, msg, *args):
         """Hugs the given user"""
@@ -284,13 +290,26 @@ You can display today's featured article: wiki today
         return joke.format(nick=nick)
 
     def _birthday(self, msg, *args):
-        """Sends a happy birthday greeting
+        """Sends a happy birthday in an random language greeting
         
 You can add a nickname: bday <nick>
         """
+        rand_lang = self._get_random_lang()
+        greet = 'Happy birthday to you'
+        translated = self._translator.translate(greet, lang_to=rand_lang[0])
         if args:
-            return 'Alles gute zum Geburtstag @{}'.format(' '.join(args))
-        return 'Alles gute zum Geburtstag'
+            return '{} @{} (translated to {})'.format(translated,
+                                                      ' '.join(args),
+                                                      rand_lang[1])
+        return '{} (translated to {})'.format(translated, rand_lang[1])
+
+    def _get_random_lang(self):
+        with open('lang_codes.txt') as f:
+            lines = [tuple(line.strip().split(';')) for line in f]
+            langs = dict(lines)
+        lang_code = random.choice(list(langs))
+        country = langs[lang_code]
+        return (lang_code, country)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -306,10 +325,12 @@ if __name__ == '__main__':
                         help='the MUC room to join')
     parser.add_argument('muc_nick',
                         help='the nick name that should be used')
+    parser.add_argument()
     args = parser.parse_args()
     logging.basicConfig(level=logging.ERROR,
                         format='%(levelname)-8s %(message)s')
     bot = MUCBot(args.jid, args.pwd, args.surl_api,
-                 args.surl_sig, args.muc_room, args.muc_nick)
+                 args.surl_sig, args.muc_room, args.muc_nick,
+                 args.trans_client_id, args.trans_client_sec)
     bot.connect()
     bot.process(block=True)
