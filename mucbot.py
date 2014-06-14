@@ -304,7 +304,9 @@ You can add a nickname: bday <nick>
         return '{} (translated to {})'.format(translated, rand_lang[1])
 
     def _get_random_lang(self):
-        with open('lang_codes.txt') as f:
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, 'lang_codes.txt')
+        with open(filepath) as f:
             lines = [tuple(line.strip().split(';')) for line in f]
             langs = dict(lines)
         lang_code = random.choice(list(langs))
