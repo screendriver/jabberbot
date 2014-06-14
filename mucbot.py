@@ -8,7 +8,7 @@ import requests
 from html.parser import HTMLParser
 
 import feedparser
-from mstranslator import Translator
+from microsofttranslator import Translator
 from sleekxmpp import ClientXMPP
 
 class MUCBot(ClientXMPP):
@@ -228,8 +228,8 @@ Simply type: !slap <nick> an it will slap the person
         """Displays a 'enjoy your meal' message in a random language"""
         rand_lang = self._get_random_lang()
         meal = 'Enjoy your meal'
-        translated = self._translator.translate(meal, lang_to=rand_lang[0])
-        return '{} (translated in {})'.format(translated, rand_lang[1])
+        translated = self._translator.translate(meal, rand_lang[0])
+        return '{} (translated to {})'.format(translated, rand_lang[1])
 
     def _hug(self, msg, *args):
         """Hugs the given user"""
@@ -296,7 +296,7 @@ You can add a nickname: bday <nick>
         """
         rand_lang = self._get_random_lang()
         greet = 'Happy birthday to you'
-        translated = self._translator.translate(greet, lang_to=rand_lang[0])
+        translated = self._translator.translate(greet, rand_lang[0])
         if args:
             return '{} @{} (translated to {})'.format(translated,
                                                       ' '.join(args),
@@ -329,7 +329,7 @@ if __name__ == '__main__':
                         help='the nick name that should be used')
     parser.add_argument()
     args = parser.parse_args()
-    logging.basicConfig(level=logging.ERROR,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)-8s %(message)s')
     bot = MUCBot(args.jid, args.pwd, args.surl_api,
                  args.surl_sig, args.muc_room, args.muc_nick,
