@@ -274,7 +274,9 @@ You can display today's featured article: wiki today
 
     def _taunt(self, msg, *args):
         """Taunts the given user"""
-        with open('mother_jokes.txt') as f:
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, 'mother_jokes.txt')
+        with open(filepath) as f:
             jokes = tuple(joke.strip() for joke in f)
         joke = random.choice(jokes)
         nick = "{}'s".format(' '.join(args)) if args else 'Deine'
