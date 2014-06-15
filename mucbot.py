@@ -3,11 +3,11 @@ import argparse
 import inspect
 import logging
 import os
+import random
 import requests
 from html.parser import HTMLParser
 
 import feedparser
-import slapper
 from sleekxmpp import ClientXMPP
 
 class MUCBot(ClientXMPP):
@@ -208,11 +208,15 @@ You have to provide a subject: vstart <subject>
 
 Simply type: !slap <nick> an it will slap the person
         """
-        try:
-            return '/me ' + slapper.slap(' '.join(args))
-        except ValueError as e:
-            return str(e)
-        return '{}: {}'.format(image.title, image.link)
+        nick = ' '.join(args)
+        if not nick:
+            return 'You have to provide a nick name'
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, 'slaps.txt')
+        with open(filepath) as f:
+            slaps = tuple(slap.strip() for slap in f)
+            slap = random.choice(slaps).format(nick=nick)
+            return '/me {}'.format(slap)
 
     def _meal(self, msg, *args):
         """Displays a 'enjoy your meal' message"""
@@ -265,6 +269,10 @@ You can display today's featured article: wiki today
         page = list(pages.values())[0]
         url = self._shorten_url(msg, page['fullurl'])
         return '{}'.format(url)
+
+    def _taunt(self, msg, *args):
+        """Taunts the given user"""
+        pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
