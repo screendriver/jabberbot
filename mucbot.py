@@ -28,7 +28,8 @@ class MUCBot(ClientXMPP):
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
-                      'wiki': self._wikipedia}
+                      'wiki': self._wikipedia,
+                      'taunt': self._taunt}
         self._muc_cmds = {'help': self._help,
                           'chuck': self._chuck_norris,
                           'surl': self._shorten_url,
@@ -41,7 +42,8 @@ class MUCBot(ClientXMPP):
                           'meal': self._meal,
                           'hug': self._hug,
                           'kiss': self._kiss,
-                          'wiki': self._wikipedia}
+                          'wiki': self._wikipedia,
+                          'taunt': self._taunt}
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
         self.register_plugin('xep_0045')
@@ -272,7 +274,11 @@ You can display today's featured article: wiki today
 
     def _taunt(self, msg, *args):
         """Taunts the given user"""
-        pass
+        with open('mother_jokes.txt') as f:
+            jokes = tuple(joke.strip() for joke in f)
+        joke = random.choice(jokes)
+        nick = "{}'s".format(' '.join(args)) if args else 'Deine'
+        return joke.format(nick=nick)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
