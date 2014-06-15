@@ -26,22 +26,22 @@ class MUCBot(ClientXMPP):
         self._room = room
         self._nick = nick
         self._cmds = {'help': self._help,
-                'chuck': self._chuck_norris,
-                'surl': self._shorten_url,
-                'wiki': self._wikipedia}
+                      'chuck': self._chuck_norris,
+                      'surl': self._shorten_url,
+                      'wiki': self._wikipedia}
         self._muc_cmds = {'help': self._help,
-                'chuck': self._chuck_norris,
-                'surl': self._shorten_url,
-                'vstart': self._vote_start,
-                'vup': self._vote_up,
-                'vdown': self._vote_down,
-                'vstat': self._vote_stat,
-                'vend': self._vote_end,
-                'slap': self._slap,
-                'meal': self._meal,
-                'hug': self._hug,
-                'kiss': self._kiss,
-                'wiki': self._wikipedia}
+                          'chuck': self._chuck_norris,
+                          'surl': self._shorten_url,
+                          'vstart': self._vote_start,
+                          'vup': self._vote_up,
+                          'vdown': self._vote_down,
+                          'vstat': self._vote_stat,
+                          'vend': self._vote_end,
+                          'slap': self._slap,
+                          'meal': self._meal,
+                          'hug': self._hug,
+                          'kiss': self._kiss,
+                          'wiki': self._wikipedia}
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
         self.register_plugin('xep_0045')
@@ -50,8 +50,8 @@ class MUCBot(ClientXMPP):
         self.get_roster()
         self.send_presence()
         self.plugin['xep_0045'].joinMUC(self._room,
-                self._nick,
-                wait=True)
+                                        self._nick,
+                                        wait=True)
 
     def message(self, msg):
         body = msg['body']
@@ -75,12 +75,12 @@ class MUCBot(ClientXMPP):
             # Send help always as normal chat
             if cmd == 'help':
                 self.send_message(mto=msg['from'],
-                        mbody=resp,
-                        mtype='chat')
+                                  mbody=resp,
+                                  mtype='chat')
             else:
                 self.send_message(mto=msg['from'].bare,
-                        mbody=resp,
-                        mtype=msg_type)
+                                  mbody=resp,
+                                  mtype=msg_type)
 
     def _help(self, msg, args):
         """Returns a help string containing all commands"""
@@ -136,9 +136,9 @@ shorturl http://myurl.com
         if not args:
             return "You must provide a URL to shorten"
         params = {'signature': self._shorturl_signature,
-                'url': args,
-                'action': 'shorturl',
-                'format': 'json'}
+                  'url': args,
+                  'action': 'shorturl',
+                  'format': 'json'}
         request = requests.get(self._shorturl_url, params = params)
         if request.status_code == requests.codes.ok:
             json = request.json()
@@ -185,9 +185,9 @@ You have to provide a subject: vstart <subject>
         """Displays statistics for the current voting"""
         if self._vote_subject:
             return 'Subject: "{}". Votes up: {:d}. Votes down: {:d}'.format(
-                       self._vote_subject,
-                       len(self._votes_up),
-                       len(self._votes_down))
+                self._vote_subject,
+                len(self._votes_up),
+                len(self._votes_down))
         return self._NO_VOTINGS_MESSAGE
 
     def _vote_end(self, msg, args):
@@ -195,9 +195,9 @@ You have to provide a subject: vstart <subject>
         if not self._vote_subject:
             return self._NO_VOTINGS_MESSAGE
         result = 'Voting "{}" ended. {:d} votes up. {:d} votes down'.format(
-                     self._vote_subject,
-                     len(self._votes_up),
-                     len(self._votes_down))
+            self._vote_subject,
+            len(self._votes_up),
+            len(self._votes_down))
         self._vote_subject = None
         self._votes_up.clear()
         self._votes_down.clear()
@@ -253,12 +253,12 @@ You can display today's featured article: wiki today
             today = feed['items'][-1]
             return self._shorten_url(msg, today['link'])
         params = {'action': 'query',
-                'format': 'json',
-                'generator': 'random',
-                'grnnamespace': 0,
-                'grnlimit': 1,
-                'prop': 'info',
-                'inprop': 'url'}
+                 'format': 'json',
+                 'generator': 'random',
+                 'grnnamespace': 0,
+                 'grnlimit': 1,
+                 'prop': 'info',
+                 'inprop': 'url'}
         req = requests.get('http://de.wikipedia.org/w/api.php', params=params)
         json = req.json()
         pages = json['query']['pages']
