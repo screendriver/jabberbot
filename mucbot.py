@@ -27,7 +27,8 @@ class MUCBot(ClientXMPP):
         self._slaps = ()
         self._muc_room = muc_room
         self._muc_nick = muc_nick
-        self._translator = Translator(trans_client_id, trans_client_sec)
+        self._trans_client_id = trans_client_id
+        self._trans_client_sec = trans_client_sec
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
@@ -228,7 +229,8 @@ Simply type: !slap <nick> an it will slap the person
         """Displays a 'enjoy your meal' message in a random language"""
         rand_lang = self._get_random_lang()
         meal = 'Enjoy your meal'
-        translated = self._translator.translate(meal, rand_lang[0])
+        translator = Translator(self._trans_client_id, self._trans_client_sec)
+        translated = translator.translate(meal, rand_lang[0])
         return '{} (translated to {})'.format(translated, rand_lang[1])
 
     def _hug(self, msg, *args):
@@ -296,7 +298,8 @@ You can add a nickname: bday <nick>
         """
         rand_lang = self._get_random_lang()
         greet = 'Happy birthday to you'
-        translated = self._translator.translate(greet, rand_lang[0])
+        translator = Translator(self._trans_client_id, self._trans_client_sec)
+        translated = translator.translate(greet, rand_lang[0])
         if args:
             return '{} @{} (translated to {})'.format(translated,
                                                       ' '.join(args),
