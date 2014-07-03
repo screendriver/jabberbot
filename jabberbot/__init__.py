@@ -1,0 +1,1 @@
+from .mucbot import MUCBot
