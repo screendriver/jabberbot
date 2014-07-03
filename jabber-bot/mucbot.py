@@ -11,6 +11,7 @@ import feedparser
 from microsofttranslator import Translator
 from sleekxmpp import ClientXMPP
 
+
 class MUCBot(ClientXMPP):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
     _CMD_PREFIX = '!'
@@ -98,13 +99,13 @@ class MUCBot(ClientXMPP):
         elif msg_type == 'groupchat':
             cmds = self._muc_cmds
         docs = []
-        if args: # help <command>
+        if args:  # help <command>
             cmd = args[0]
             if len(args) > 1 or cmd not in cmds:
                 return
             doc = inspect.getdoc(cmds[cmd])
             docs.append(doc)
-        else: # help
+        else:  # help
             docs.append('Available commands:{}'.format(os.linesep))
             for cmd in sorted(cmds.keys()):
                 doc = inspect.getdoc(cmds[cmd])
@@ -131,7 +132,7 @@ him as arguments: chuck <firstname> <lastname>
                 return 'You must append a firstname *and* a lastname'
             params = {'firstName': args[0], 'lastName': args[1]}
         request = requests.get('http://api.icndb.com/jokes/random',
-                               params = params)
+                               params=params)
         joke = request.json()['value']['joke']
         return HTMLParser().unescape(joke)
 
@@ -146,7 +147,7 @@ shorturl http://myurl.com
                   'url': args,
                   'action': 'shorturl',
                   'format': 'json'}
-        request = requests.get(self._surl_api, params = params)
+        request = requests.get(self._surl_api, params=params)
         if request.status_code == requests.codes.ok:
             json = request.json()
             return '{}: {}'.format(json['title'], json['shorturl'])
@@ -293,7 +294,7 @@ You can display today's featured article: wiki today
 
     def _birthday(self, msg, *args):
         """Sends a happy birthday in an random language greeting
-        
+
 You can add a nickname: bday <nick>
         """
         rand_lang = self._get_random_lang()
@@ -325,7 +326,7 @@ if __name__ == '__main__':
     parser.add_argument('surl_api',
                         help='the API URL to the URL shortener')
     parser.add_argument('surl_sig',
-                         help='the signaturen for the URL shortener')
+                        help='the signaturen for the URL shortener')
     parser.add_argument('muc_room',
                         help='the MUC room to join')
     parser.add_argument('muc_nick',
