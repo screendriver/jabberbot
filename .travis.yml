@@ -1,6 +1,12 @@
 language: python
+
 python:
     - "3.4"
 
 install: "pip install -r requirements.txt"
+
+before_script:
+    - "pep8 jabberbot"
+    - "pep8 tests"
+
 script: python -m unittest
