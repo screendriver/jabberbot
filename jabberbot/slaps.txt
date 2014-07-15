@@ -80,3 +80,4 @@ haut {nick} auf d' Goschn
 streicht {nick} oane auf, die er ned so schnäi vergisst
 klatscht dem windigen Zigarettenbürschel {nick} oane
 gibt {nick} a Watschn. Batsch!
+schmiert {nick} den goidana Schua hinter'd Ohrn
