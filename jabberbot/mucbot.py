@@ -350,7 +350,8 @@ You can add a nickname: bday <nick>
         return (lang_code, country)
     
     def _mattdamon(self, msg, *args):
-        """Simply returns 'Matt Damon!', checkout out Team America: World Police to see why
+        """Simply returns 'Matt Damon!', checkout out Team America: World Police 
+to see why
         """
         return 'Matt Damon!'
 
