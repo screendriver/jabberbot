@@ -18,9 +18,9 @@ setup(
     install_requires=[
         'dnspython3>=1.11.1',
         'feedparser>=5.1.3',
-        'microsofttranslator>=0.5',
+        'microsofttranslator>=0.6',
         'requests>=2.3.0',
-        'simplejson>=3.5.2',
+        'simplejson>=3.6.0',
         'sleekxmpp>=1.3.1'
     ],
     package_data={
