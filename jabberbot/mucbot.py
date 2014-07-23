@@ -3,6 +3,7 @@ import argparse
 import inspect
 import logging
 import os
+import pickle
 import random
 import requests
 from html.parser import HTMLParser
@@ -25,11 +26,16 @@ class MUCBot(ClientXMPP):
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
-        self._slaps = ()
         self._muc_room = muc_room
         self._muc_nick = muc_nick
         self._trans_client_id = trans_client_id
         self._trans_client_sec = trans_client_sec
+        self._nicks_filename = 'subject_nicks'
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, self._nicks_filename)
+        if not os.path.exists(filepath):
+            with open(filepath, 'w+b') as f:
+                pickle.dump(set(), f)
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
@@ -50,16 +56,30 @@ class MUCBot(ClientXMPP):
                           'wiki': self._wikipedia,
                           'taunt': self._taunt,
                           'bday': self._birthday}
+        self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
-        self.register_plugin('xep_0045')
+        self.add_event_handler('muc::{}::got_online'.format(muc_room),
+                               self.muc_got_online)
 
     def start(self, event):
-        self.get_roster()
         self.send_presence()
+        self.get_roster()
         self.plugin['xep_0045'].joinMUC(self._muc_room,
                                         self._muc_nick,
                                         wait=True)
+
+    def muc_got_online(self, presence):
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, self._nicks_filename)
+        with open(filepath, 'r+b') as f:
+            nick = presence['muc']['nick']
+            nicks = pickle.load(f)
+            nicks.add(nick)
+            f.seek(0)
+            if nick not in nicks:
+                logging.debug('Adding %s to %s', nick, self._nick_filename)
+            pickle.dump(nicks, f)
 
     def message(self, msg):
         body = msg['body']
