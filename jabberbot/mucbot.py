@@ -49,7 +49,8 @@ class MUCBot(ClientXMPP):
                           'kiss': self._kiss,
                           'wiki': self._wikipedia,
                           'taunt': self._taunt,
-                          'bday': self._birthday}
+                          'bday': self._birthday,
+                          'matt': self._mattdamon}
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('message', self.message)
         self.register_plugin('xep_0045')
@@ -316,6 +317,11 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
+    
+    def _mattdamon(self):
+        """Simply returns 'Matt Damon!', checkout out Team America: World Police to see why
+        """
+        return 'Matt Damon!'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
