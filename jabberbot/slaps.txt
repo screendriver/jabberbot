@@ -81,3 +81,4 @@ streicht {nick} oane auf, die er ned so schnäi vergisst
 klatscht dem windigen Zigarettenbürschel {nick} oane
 gibt {nick} a Watschn. Batsch!
 schmiert {nick} den scheiß goidana Schua hinter'd Ohrn
+a Watschn für {nick} is schneller gschmiert als a Butterbrot
