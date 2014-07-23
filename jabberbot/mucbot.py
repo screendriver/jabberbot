@@ -26,7 +26,7 @@ class MUCBot(ClientXMPP):
                  trans_client_id, trans_client_sec):
         super().__init__(jid, password)
         self._surl_api = surl_api
-        self._surl_sigl = surl_sig
+        self._surl_sig = surl_sig
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
@@ -61,7 +61,8 @@ class MUCBot(ClientXMPP):
                           'kiss': self._kiss,
                           'wiki': self._wikipedia,
                           'taunt': self._taunt,
-                          'bday': self._birthday}
+                          'bday': self._birthday,
+                          'matt': self._mattdamon}
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('session_end', self.end)
@@ -347,6 +348,11 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
+    
+    def _mattdamon(self, msg, *args):
+        """Simply returns 'Matt Damon!', checkout out Team America: World Police to see why
+        """
+        return 'Matt Damon!'
 
     def _change_subject(self):
         dirpath = os.path.dirname(os.path.realpath(__file__))
