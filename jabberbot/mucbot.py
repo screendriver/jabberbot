@@ -6,11 +6,15 @@ import os
 import pickle
 import random
 import requests
+from threading import Timer
 from html.parser import HTMLParser
 
 import feedparser
 from microsofttranslator import Translator
 from sleekxmpp import ClientXMPP
+
+
+logger = logging.getLogger(__name__)
 
 
 class MUCBot(ClientXMPP):
@@ -22,7 +26,7 @@ class MUCBot(ClientXMPP):
                  trans_client_id, trans_client_sec):
         super().__init__(jid, password)
         self._surl_api = surl_api
-        self._surl_sig = surl_sig
+        self._surl_sigl = surl_sig
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
@@ -36,6 +40,8 @@ class MUCBot(ClientXMPP):
         if not os.path.exists(filepath):
             with open(filepath, 'w+b') as f:
                 pickle.dump(set(), f)
+        self._timer = Timer(random.randint(3600, 43200), self._change_subject)
+        self._timer.start()
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
@@ -58,6 +64,7 @@ class MUCBot(ClientXMPP):
                           'bday': self._birthday}
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
+        self.add_event_handler('session_end', self.end)
         self.add_event_handler('message', self.message)
         self.add_event_handler('muc::{}::got_online'.format(muc_room),
                                self.muc_got_online)
@@ -69,6 +76,10 @@ class MUCBot(ClientXMPP):
                                         self._muc_nick,
                                         wait=True)
 
+    def end(self, event):
+        logger.debug('Cancelling timer')
+        self._timer.cancel()
+
     def muc_got_online(self, presence):
         dirpath = os.path.dirname(os.path.realpath(__file__))
         filepath = os.path.join(dirpath, self._nicks_filename)
@@ -78,7 +89,7 @@ class MUCBot(ClientXMPP):
             nicks.add(nick)
             f.seek(0)
             if nick not in nicks:
-                logging.debug('Adding %s to %s', nick, self._nick_filename)
+                logger.debug('Adding %s to %s', nick, self._nick_filename)
             pickle.dump(nicks, f)
 
     def message(self, msg):
@@ -336,6 +347,20 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
+
+    def _change_subject(self):
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, self._nicks_filename)
+        with open(filepath, 'rb') as f:
+            nicks = pickle.load(f)
+        if nicks:
+            nick = random.choice(list(nicks))
+            self.send_message(mto=self._muc_room,
+                              mbody=None,
+                              msubject='{} ist ein Hengst'.format(nick),
+                              mtype='groupchat')
+        self._timer = Timer(random.randint(3600, 43200), self._change_subject)
+        self._timer.start()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
