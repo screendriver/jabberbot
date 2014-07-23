@@ -317,9 +317,10 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
-    
+
     def _mattdamon(self):
-        """Simply returns 'Matt Damon!', checkout out Team America: World Police to see why
+        """Simply returns 'Matt Damon!', checkout out Team America: World Police 
+to see why
         """
         return 'Matt Damon!'
 
