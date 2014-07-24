@@ -355,17 +355,22 @@ You can add a nickname: bday <nick>
         return 'Matt Damon!'
 
     def _change_subject(self):
+        """Changes randomly the subject of the MUC"""
         dirpath = os.path.dirname(os.path.realpath(__file__))
         filepath = os.path.join(dirpath, self._nicks_filename)
         with open(filepath, 'rb') as f:
             nicks = pickle.load(f)
         if nicks:
             nick = random.choice(list(nicks))
+            subject = '{} ist ein Hengst'.format(nick)
+            logger.debug('Changing MUC subject to "%s"', subject)
             self.send_message(mto=self._muc_room,
                               mbody=None,
-                              msubject='{} ist ein Hengst'.format(nick),
+                              msubject=subject,
                               mtype='groupchat')
-        self._timer = Timer(random.randint(3600, 43200), self._change_subject)
+        interval = random.randint(3600, 43200)
+        logger.debug('Next MUC subject change in %d seconds', interval)
+        self._timer = Timer(interval, self._change_subject)
         self._timer.start()
 
 if __name__ == '__main__':
