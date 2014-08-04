@@ -357,8 +357,11 @@ You can add a nickname: bday <nick>
         """
         return 'Matt Damon!'
 
-    def _muskatnuss(self, msg, *args):
-        pass
+    def _muskatnuss(msg, *args):
+        """Returns 'Muskatnuss! Muskatnuss!!! 'err <nickname>!'
+        """
+        nickname = 'Müller' if not args else ' '.join(args)
+        return 'Muskatnuss! Muskatnuss!!! \'err ' + nickname
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
