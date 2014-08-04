@@ -46,7 +46,9 @@ class MUCBot(ClientXMPP):
                       'chuck': self._chuck_norris,
                       'surl': self._shorten_url,
                       'wiki': self._wikipedia,
-                      'taunt': self._taunt}
+                      'taunt': self._taunt,
+                      'matt': self._mattdamon,
+                      'muskatnuss': self._muskatnuss}
         self._muc_cmds = {'help': self._help,
                           'chuck': self._chuck_norris,
                           'surl': self._shorten_url,
@@ -62,7 +64,8 @@ class MUCBot(ClientXMPP):
                           'wiki': self._wikipedia,
                           'taunt': self._taunt,
                           'bday': self._birthday,
-                          'matt': self._mattdamon}
+                          'matt': self._mattdamon,
+                          'muskatnuss': self._muskatnuss}
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('session_end', self.end)
@@ -353,6 +356,12 @@ You can add a nickname: bday <nick>
         """Simply returns 'Matt Damon!', checkout out Team America: World Police
         """
         return 'Matt Damon!'
+
+    def _muskatnuss(msg, *args):
+        """Returns 'Muskatnuss! Muskatnuss!!! 'err <nickname>!'
+        """
+        nickname = 'Müller' if not args else ' '.join(args)
+        return 'Muskatnuss! Muskatnuss!!! \'err ' + nickname
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
