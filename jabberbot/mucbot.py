@@ -48,7 +48,8 @@ class MUCBot(ClientXMPP):
                       'wiki': self._wikipedia,
                       'taunt': self._taunt,
                       'matt': self._mattdamon,
-                      'muskatnuss': self._muskatnuss}
+                      'muskatnuss': self._muskatnuss,
+                      'joke': self._joke}
         self._muc_cmds = {'help': self._help,
                           'chuck': self._chuck_norris,
                           'surl': self._shorten_url,
@@ -65,7 +66,8 @@ class MUCBot(ClientXMPP):
                           'taunt': self._taunt,
                           'bday': self._birthday,
                           'matt': self._mattdamon,
-                          'muskatnuss': self._muskatnuss}
+                          'muskatnuss': self._muskatnuss,
+                          'joke': self._joke}
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('session_end', self.end)
@@ -358,10 +360,17 @@ You can add a nickname: bday <nick>
         return 'Matt Damon!'
 
     def _muskatnuss(self, msg, *args):
-        """Returns 'Muskatnuss! Muskatnuss!!! 'err <nickname>!'
-        """
+        """Returns 'Muskatnuss! Muskatnuss!!! 'err <nickname>!'"""
         nickname = 'Müller' if not args else ' '.join(args)
         return 'Muskatnuss! Muskatnuss!!! \'err ' + nickname
+
+    def _joke(self, msg, *args):
+        """Makes a random joke"""
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(dirpath, 'jokes.txt')
+        with open(filepath) as f:
+            jokes = tuple(joke.strip() for joke in f)
+            return random.choice(jokes)
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
