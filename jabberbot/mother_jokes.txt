@@ -54,3 +54,4 @@ Zombies beißen Menschen, {nick} Mutter beißt Zombies
 {nick} Mutter arbeitet im Knast als Bestrafung
 {nick} Mutter kratzt an Bäumen nach Hartz-IV
 {nick} Mutter hat Zähne so schön wie Sterne: ganz gelb und weit auseinander
+{nick} Mutter sammelt Klopapierrollen
