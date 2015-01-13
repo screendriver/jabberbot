@@ -21,12 +21,9 @@ class MUCBot(ClientXMPP):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
     _CMD_PREFIX = '!'
 
-    def __init__(self, jid, password, surl_api,
-                 surl_sig, muc_room, muc_nick,
+    def __init__(self, jid, password, muc_room, muc_nick,
                  trans_client_id, trans_client_sec):
         super().__init__(jid, password)
-        self._surl_api = surl_api
-        self._surl_sig = surl_sig
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
@@ -44,7 +41,6 @@ class MUCBot(ClientXMPP):
         self._timer.start()
         self._cmds = {'help': self._help,
                       'chuck': self._chuck_norris,
-                      'surl': self._shorten_url,
                       'wiki': self._wikipedia,
                       'taunt': self._taunt,
                       'matt': self._mattdamon,
@@ -52,7 +48,6 @@ class MUCBot(ClientXMPP):
                       'joke': self._joke}
         self._muc_cmds = {'help': self._help,
                           'chuck': self._chuck_norris,
-                          'surl': self._shorten_url,
                           'vstart': self._vote_start,
                           'vup': self._vote_up,
                           'vdown': self._vote_down,
@@ -172,23 +167,6 @@ him as arguments: chuck <firstname> <lastname>
                                params=params)
         joke = request.json()['value']['joke']
         return HTMLParser().unescape(joke)
-
-    def _shorten_url(self, msg, *args):
-        """Shorten a URL with the http://kurzma.ch URL shortener
-
-shorturl http://myurl.com
-        """
-        if not args:
-            return "You must provide a URL to shorten"
-        params = {'signature': self._surl_sig,
-                  'url': args,
-                  'action': 'shorturl',
-                  'format': 'json'}
-        request = requests.get(self._surl_api, params=params)
-        if request.status_code == requests.codes.ok:
-            json = request.json()
-            return '{}: {}'.format(json['title'], json['shorturl'])
-        return 'Something went wrong :('
 
     def _vote_start(self, msg, *args):
         """Starts a voting
@@ -397,10 +375,6 @@ if __name__ == '__main__':
                         help='the JID of the bot')
     parser.add_argument('pwd',
                         help='the password for the given JID')
-    parser.add_argument('surl_api',
-                        help='the API URL to the URL shortener')
-    parser.add_argument('surl_sig',
-                        help='the signaturen for the URL shortener')
     parser.add_argument('muc_room',
                         help='the MUC room to join')
     parser.add_argument('muc_nick',
@@ -409,8 +383,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)-8s %(message)s')
-    bot = MUCBot(args.jid, args.pwd, args.surl_api,
-                 args.surl_sig, args.muc_room, args.muc_nick,
+    bot = MUCBot(args.jid, args.pwd, args.muc_room, args.muc_nick,
                  args.trans_client_id, args.trans_client_sec)
     bot.connect()
     bot.process(block=True)
