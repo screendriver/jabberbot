@@ -6,7 +6,7 @@ setup(
     description='A Jabber Bot for my XMPP service',
     url='https://github.com/ScreenDriver/jabber-bot',
     author='RaspberryRice',
-    author_email='christian@echooff.de',
+    author_email='github@echooff.de',
     license='MIT',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     classifiers=[
@@ -16,11 +16,11 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
     install_requires=[
-        'dnspython3>=1.11.1',
+        'dnspython3>=1.12.0',
         'feedparser>=5.1.3',
-        'microsofttranslator>=0.6',
-        'requests>=2.3.0',
-        'simplejson>=3.6.0',
+        'microsofttranslator>=0.7',
+        'requests>=2.5.1',
+        'simplejson>=3.6.5',
         'sleekxmpp>=1.3.1'
     ],
     package_data={

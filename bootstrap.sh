@@ -6,7 +6,7 @@ sudo dpkg-reconfigure -f noninteractive tzdata
 
 # Update package list
 sudo apt-get update -y
-sudo apt-get install -y build-essential git mc python3-pip
+sudo apt-get install -y build-essential git mc python3-pip pylint
 
 echo "alias sudo='sudo env PATH=$PATH'" >> /home/vagrant/.bash_profile
 

@@ -6,7 +6,7 @@ python:
 install: "pip install -r requirements.txt"
 
 before_script:
-    - "pep8 jabberbot"
-    - "pep8 tests"
+    - "pylint jabberbot"
+    - "pylint tests"
 
 script: python -m unittest
