@@ -1,12 +1,9 @@
+sudo: false
 language: python
-
 python:
     - "3.4"
-
 install: "pip install -r requirements.txt"
-
 before_script:
-    - "pylint jabberbot"
-    - "pylint tests"
-
+    - "flake8 jabberbot"
+    - "flake8 tests"
 script: python -m unittest
