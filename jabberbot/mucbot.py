@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 import argparse
+import commands
 import inspect
+import importlib
 import logging
 import os
 import pickle
+import pkgutil
 import random
 import requests
 from threading import Timer
-from html.parser import HTMLParser
 
 import feedparser
 from microsofttranslator import Translator
@@ -24,11 +26,28 @@ class MUCBot(ClientXMPP):
     def __init__(self, jid, password, muc_room, muc_nick,
                  trans_client_id, trans_client_sec):
         super().__init__(jid, password)
+        self.commands = {}
+        self._muc_room = muc_room
+        self._muc_nick = muc_nick
+        cmdpath = commands.__path__
+        for module_finder, name, ispkg in pkgutil.iter_modules(cmdpath):
+            module = importlib.import_module('.' + name, 'commands')
+            if not hasattr(module, 'run_command'):
+                continue
+            module_name = module.__name__  # commands.foo
+            index = module_name.index('.')  # 8
+            command_name = module_name[index + 1:]  # foo
+            self.commands[command_name] = module
+        self.register_plugin('xep_0045')
+        self.add_event_handler('session_start', self.start)
+        self.add_event_handler('session_end', self.end)
+        self.add_event_handler('message', self.message)
+        self.add_event_handler('muc::{}::got_online'.format(muc_room),
+                               self.muc_got_online)
+        return
         self._vote_subject = None
         self._votes_up = set()
         self._votes_down = set()
-        self._muc_room = muc_room
-        self._muc_nick = muc_nick
         self._trans_client_id = trans_client_id
         self._trans_client_sec = trans_client_sec
         self._nicks_filename = 'subject_nicks'
@@ -63,12 +82,6 @@ class MUCBot(ClientXMPP):
                           'matt': self._mattdamon,
                           'muskatnuss': self._muskatnuss,
                           'joke': self._joke}
-        self.register_plugin('xep_0045')
-        self.add_event_handler('session_start', self.start)
-        self.add_event_handler('session_end', self.end)
-        self.add_event_handler('message', self.message)
-        self.add_event_handler('muc::{}::got_online'.format(muc_room),
-                               self.muc_got_online)
 
     def start(self, event):
         self.send_presence()
@@ -95,30 +108,23 @@ class MUCBot(ClientXMPP):
 
     def message(self, msg):
         body = msg['body']
-        if not body.startswith(self._CMD_PREFIX):
-            return
         msg_type = msg['type']
-        cmd_args = body.strip().split(' ')
-        # Strip command prefix
-        cmd = cmd_args[0][len(self._CMD_PREFIX):]
-        # MUC provides more commands as normal chat
-        if msg_type in ('normal', 'chat'):
-            cmds = self._cmds
-        elif msg_type == 'groupchat':
-            cmds = self._muc_cmds
-        if cmd not in cmds:
-            return
-        resp = cmds[cmd](msg, *cmd_args[1:])
-        if msg_type in ('normal', 'chat'):
-            msg.reply(resp).send()
-        elif msg_type == 'groupchat':
+        if msg_type == 'groupchat' and body.startswith(self._CMD_PREFIX):
+            cmd_args = body.strip().split(' ')
+            # Strip command prefix
+            cmd = cmd_args[0][len(self._CMD_PREFIX):]
+            if cmd not in self.commands:
+                logger.warning('Invalid command %s', cmd)
+                return
+            resp = self.commands[cmd](msg, *cmd_args[1:])
+            msg_from = msg['from']
             # Send help always as normal chat
             if cmd == 'help':
-                self.send_message(mto=msg['from'],
+                self.send_message(mto=msg_from,
                                   mbody=resp,
                                   mtype='chat')
             else:
-                self.send_message(mto=msg['from'].bare,
+                self.send_message(mto=msg_from.bare,
                                   mbody=resp,
                                   mtype=msg_type)
 
@@ -151,22 +157,6 @@ class MUCBot(ClientXMPP):
         src = 'Source code available at http://kurzma.ch/botsrc'
         docs.append(src)
         return os.linesep.join(docs)
-
-    def _chuck_norris(self, msg, *args):
-        """Displays a random Chuck Norris joke from http://icndb.com
-
-You can optionally change the name of the main character by appending \
-him as arguments: chuck <firstname> <lastname>
-        """
-        params = None
-        if args:
-            if len(args) != 2:
-                return 'You must append a firstname *and* a lastname'
-            params = {'firstName': args[0], 'lastName': args[1]}
-        request = requests.get('http://api.icndb.com/jokes/random',
-                               params=params)
-        joke = request.json()['value']['joke']
-        return HTMLParser().unescape(joke)
 
     def _vote_start(self, msg, *args):
         """Starts a voting
