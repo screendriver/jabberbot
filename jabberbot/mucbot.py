@@ -67,8 +67,7 @@ class MUCBot(ClientXMPP):
         #                     self._change_subject)
         # self._timer.start()
         # self._cmds = {'help': self._help,
-        #               'wiki': self._wikipedia,
-        #               'joke': self._joke}
+        #               'wiki': self._wikipedia
         # self._muc_cmds = {'help': self._help,
         #                   'vstart': self._vote_start,
         #                   'vup': self._vote_up,
@@ -80,8 +79,7 @@ class MUCBot(ClientXMPP):
         #                   'hug': self._hug,
         #                   'kiss': self._kiss,
         #                   'wiki': self._wikipedia,
-        #                   'bday': self._birthday,
-        #                   'joke': self._joke}
+        #                   'bday': self._birthday
 
     def start(self, event):
         self.send_presence()
@@ -314,14 +312,6 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
-
-    def _joke(self, msg, *args):
-        """Makes a random joke"""
-        dirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = os.path.join(dirpath, 'jokes.txt')
-        with open(filepath) as f:
-            jokes = tuple(joke.strip() for joke in f)
-            return random.choice(jokes)
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
