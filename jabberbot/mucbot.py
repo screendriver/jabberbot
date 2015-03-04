@@ -44,12 +44,6 @@ class MUCBot(ClientXMPP):
         self.add_event_handler('message', self.message)
         self.add_event_handler('muc::{}::got_online'.format(muc_room),
                                self.muc_got_online)
-        return
-        self._vote_subject = None
-        self._votes_up = set()
-        self._votes_down = set()
-        self._trans_client_id = trans_client_id
-        self._trans_client_sec = trans_client_sec
         self._nicks_filename = 'subject_nicks'
         dirpath = os.path.dirname(os.path.realpath(__file__))
         filepath = os.path.join(dirpath, self._nicks_filename)
@@ -58,30 +52,43 @@ class MUCBot(ClientXMPP):
                 pickle.dump(set(), f)
         self._timer = Timer(random.randint(3600, 43200), self._change_subject)
         self._timer.start()
-        self._cmds = {'help': self._help,
-                      'chuck': self._chuck_norris,
-                      'wiki': self._wikipedia,
-                      'taunt': self._taunt,
-                      'matt': self._mattdamon,
-                      'muskatnuss': self._muskatnuss,
-                      'joke': self._joke}
-        self._muc_cmds = {'help': self._help,
-                          'chuck': self._chuck_norris,
-                          'vstart': self._vote_start,
-                          'vup': self._vote_up,
-                          'vdown': self._vote_down,
-                          'vstat': self._vote_stat,
-                          'vend': self._vote_end,
-                          'slap': self._slap,
-                          'meal': self._meal,
-                          'hug': self._hug,
-                          'kiss': self._kiss,
-                          'wiki': self._wikipedia,
-                          'taunt': self._taunt,
-                          'bday': self._birthday,
-                          'matt': self._mattdamon,
-                          'muskatnuss': self._muskatnuss,
-                          'joke': self._joke}
+        # self._vote_subject = None
+        # self._votes_up = set()
+        # self._votes_down = set()
+        # self._trans_client_id = trans_client_id
+        # self._trans_client_sec = trans_client_sec
+        # self._nicks_filename = 'subject_nicks'
+        # dirpath = os.path.dirname(os.path.realpath(__file__))
+        # filepath = os.path.join(dirpath, self._nicks_filename)
+        # if not os.path.exists(filepath):
+        #     with open(filepath, 'w+b') as f:
+        #         pickle.dump(set(), f)
+        # self._timer = Timer(random.randint(3600, 43200), self._change_subject)
+        # self._timer.start()
+        # self._cmds = {'help': self._help,
+        #               'chuck': self._chuck_norris,
+        #               'wiki': self._wikipedia,
+        #               'taunt': self._taunt,
+        #               'matt': self._mattdamon,
+        #               'muskatnuss': self._muskatnuss,
+        #               'joke': self._joke}
+        # self._muc_cmds = {'help': self._help,
+        #                   'chuck': self._chuck_norris,
+        #                   'vstart': self._vote_start,
+        #                   'vup': self._vote_up,
+        #                   'vdown': self._vote_down,
+        #                   'vstat': self._vote_stat,
+        #                   'vend': self._vote_end,
+        #                   'slap': self._slap,
+        #                   'meal': self._meal,
+        #                   'hug': self._hug,
+        #                   'kiss': self._kiss,
+        #                   'wiki': self._wikipedia,
+        #                   'taunt': self._taunt,
+        #                   'bday': self._birthday,
+        #                   'matt': self._mattdamon,
+        #                   'muskatnuss': self._muskatnuss,
+        #                   'joke': self._joke}
 
     def start(self, event):
         self.send_presence()
@@ -108,25 +115,28 @@ class MUCBot(ClientXMPP):
 
     def message(self, msg):
         body = msg['body']
-        msg_type = msg['type']
-        if msg_type == 'groupchat' and body.startswith(self._CMD_PREFIX):
+        if msg['type'] == 'groupchat' and body.startswith(self._CMD_PREFIX):
             cmd_args = body.strip().split(' ')
-            # Strip command prefix
+            # Strip command prefix e.g. !foo bar => foo
             cmd = cmd_args[0][len(self._CMD_PREFIX):]
             if cmd not in self.commands:
-                logger.warning('Invalid command %s', cmd)
+                logger.warning('Invalid command "%s"', cmd)
                 return
-            resp = self.commands[cmd](msg, *cmd_args[1:])
+            mtype, resp = self.commands[cmd](msg, *cmd_args[1:])
             msg_from = msg['from']
-            # Send help always as normal chat
-            if cmd == 'help':
-                self.send_message(mto=msg_from,
-                                  mbody=resp,
-                                  mtype='chat')
+            if mtype == 'chat':
+                mto = msg_from
             else:
-                self.send_message(mto=msg_from.bare,
-                                  mbody=resp,
-                                  mtype=msg_type)
+                mto = msg_from.bare
+            # Send help always as normal chat
+            # if cmd == 'help':
+            #     self.send_message(mto=msg_from,
+            #                       mbody=resp,
+            #                       mtype='chat')
+            # else:
+            self.send_message(mto=mto,
+                              mbody=resp,
+                              mtype=mtype)
 
     def _help(self, msg, *args):
         """Returns a help string containing all commands"""
