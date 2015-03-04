@@ -68,7 +68,6 @@ class MUCBot(ClientXMPP):
         # self._timer.start()
         # self._cmds = {'help': self._help,
         #               'wiki': self._wikipedia,
-        #               'muskatnuss': self._muskatnuss,
         #               'joke': self._joke}
         # self._muc_cmds = {'help': self._help,
         #                   'vstart': self._vote_start,
@@ -82,7 +81,6 @@ class MUCBot(ClientXMPP):
         #                   'kiss': self._kiss,
         #                   'wiki': self._wikipedia,
         #                   'bday': self._birthday,
-        #                   'muskatnuss': self._muskatnuss,
         #                   'joke': self._joke}
 
     def start(self, event):
@@ -316,11 +314,6 @@ You can add a nickname: bday <nick>
         lang_code = random.choice(list(langs))
         country = langs[lang_code]
         return (lang_code, country)
-
-    def _muskatnuss(self, msg, *args):
-        """Returns 'Muskatnuss! Muskatnuss!!! 'err <nickname>!'"""
-        nickname = 'Müller' if not args else ' '.join(args)
-        return 'Muskatnuss! Muskatnuss!!! \'err ' + nickname
 
     def _joke(self, msg, *args):
         """Makes a random joke"""
