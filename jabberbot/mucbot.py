@@ -63,17 +63,15 @@ class MUCBot(ClientXMPP):
         # if not os.path.exists(filepath):
         #     with open(filepath, 'w+b') as f:
         #         pickle.dump(set(), f)
-        # self._timer = Timer(random.randint(3600, 43200), self._change_subject)
+        # self._timer = Timer(random.randint(3600, 43200),
+        #                     self._change_subject)
         # self._timer.start()
         # self._cmds = {'help': self._help,
-        #               'chuck': self._chuck_norris,
         #               'wiki': self._wikipedia,
-        #               'taunt': self._taunt,
         #               'matt': self._mattdamon,
         #               'muskatnuss': self._muskatnuss,
         #               'joke': self._joke}
         # self._muc_cmds = {'help': self._help,
-        #                   'chuck': self._chuck_norris,
         #                   'vstart': self._vote_start,
         #                   'vup': self._vote_up,
         #                   'vdown': self._vote_down,
@@ -84,7 +82,6 @@ class MUCBot(ClientXMPP):
         #                   'hug': self._hug,
         #                   'kiss': self._kiss,
         #                   'wiki': self._wikipedia,
-        #                   'taunt': self._taunt,
         #                   'bday': self._birthday,
         #                   'matt': self._mattdamon,
         #                   'muskatnuss': self._muskatnuss,
@@ -296,16 +293,6 @@ You can display today's featured article: wiki today
         page = list(pages.values())[0]
         url = self._shorten_url(msg, page['fullurl'])
         return '{}'.format(url)
-
-    def _taunt(self, msg, *args):
-        """Taunts the given user"""
-        dirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = os.path.join(dirpath, 'mother_jokes.txt')
-        with open(filepath) as f:
-            jokes = tuple(joke.strip() for joke in f)
-        joke = random.choice(jokes)
-        nick = "{}'s".format(' '.join(args)) if args else 'Deine'
-        return joke.format(nick=nick)
 
     def _birthday(self, msg, *args):
         """Sends a happy birthday in an random language greeting
