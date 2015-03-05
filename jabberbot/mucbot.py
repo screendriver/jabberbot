@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import commands
 import inspect
 import importlib
 import logging
@@ -9,6 +8,7 @@ import pickle
 import pkgutil
 import random
 import requests
+import jabberbot.commands
 from threading import Timer
 
 import feedparser
@@ -29,14 +29,13 @@ class MUCBot(ClientXMPP):
         self.commands = {}
         self._muc_room = muc_room
         self._muc_nick = muc_nick
-        cmdpath = commands.__path__
+        cmdpath = jabberbot.commands.__path__
         for module_finder, name, ispkg in pkgutil.iter_modules(cmdpath):
-            module = importlib.import_module('.' + name, 'commands')
+            module = importlib.import_module('jabberbot.commands.' + name)
             if not hasattr(module, 'run_command'):
                 continue
-            module_name = module.__name__  # commands.foo
-            index = module_name.index('.')  # 8
-            command_name = module_name[index + 1:]  # foo
+            module_name = module.__name__  # jabberbot.commands.foo
+            command_name = module_name.rsplit('.', 1)[1]  # foo
             self.commands[command_name] = module
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)

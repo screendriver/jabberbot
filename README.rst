@@ -11,5 +11,5 @@ without any plugins. Everything is shipped with the Python standard library.
 Just run all test with
 
 ```bash
-$ python -m unittest discover --start-directory jabberbot
+$ python -m unittest
 ```

@@ -1,7 +1,7 @@
 import unittest
 import requests
 from unittest.mock import patch
-from commands import chuck
+from jabberbot.commands import chuck
 
 
 class TestChuckCommand(unittest.TestCase):

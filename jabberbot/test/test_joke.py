@@ -1,7 +1,7 @@
 import unittest
-from commands import joke
 from io import StringIO
 from unittest.mock import patch
+from jabberbot.commands import joke
 
 
 @patch('builtins.open')

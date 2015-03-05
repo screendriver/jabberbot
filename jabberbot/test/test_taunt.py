@@ -1,7 +1,7 @@
 import unittest
 from io import StringIO
 from unittest.mock import patch
-from commands import taunt
+from jabberbot.commands import taunt
 
 
 class TestTauntCommand(unittest.TestCase):

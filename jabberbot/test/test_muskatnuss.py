@@ -1,5 +1,5 @@
 import unittest
-from commands import muskatnuss
+from jabberbot.commands import muskatnuss
 
 
 class TestMuskatnussCommand(unittest.TestCase):

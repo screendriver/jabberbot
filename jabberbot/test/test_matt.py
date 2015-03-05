@@ -1,5 +1,5 @@
 import unittest
-from commands import matt
+from jabberbot.commands import matt
 
 
 class TestMatttCommand(unittest.TestCase):

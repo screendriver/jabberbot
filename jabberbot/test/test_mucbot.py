@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch, call
-from mucbot import MUCBot
+from jabberbot.mucbot import MUCBot
 
 
 class TestMUCBot(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestMUCBot(unittest.TestCase):
         patcher = patch('pickle.load', return_value=self.nicknames)
         self.addCleanup(patcher.stop)
         patcher.start()
-        patcher = patch('mucbot.Timer')
+        patcher = patch('jabberbot.mucbot.Timer')
         self.addCleanup(patcher.stop)
         self.mock_timer = patcher.start()
         patcher = patch.object(MUCBot, 'register_plugin')
