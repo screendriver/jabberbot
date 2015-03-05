@@ -115,9 +115,9 @@ class TestMUCBot(unittest.TestCase):
         self.assertFalse(self.bot.send_message.called)
 
     def test_message_to_groupchat(self):
-        self.bot.commands['help'] = MagicMock(
-            name='help',
-            return_value=('groupchat', 'message body'))
+        help_mock = MagicMock(name='help')
+        help_mock.run_command.return_value = ('groupchat', 'message body')
+        self.bot.commands['help'] = help_mock
         msg = {'from': MagicMock(), 'type': 'groupchat', 'body': '!help'}
         self.bot.message(msg)
         self.bot.send_message.assert_called_once_with(
@@ -126,9 +126,9 @@ class TestMUCBot(unittest.TestCase):
             mtype='groupchat')
 
     def test_message_to_chat(self):
-        self.bot.commands['help'] = MagicMock(
-            name='help',
-            return_value=('chat', 'message body'))
+        help_mock = MagicMock(name='help')
+        help_mock.run_command.return_value = ('chat', 'message body')
+        self.bot.commands['help'] = help_mock
         msg = {'from': MagicMock(), 'type': 'groupchat', 'body': '!help'}
         self.bot.message(msg)
         self.bot.send_message.assert_called_once_with(

@@ -112,7 +112,7 @@ class MUCBot(ClientXMPP):
             if cmd not in self.commands:
                 logger.warning('Invalid command "%s"', cmd)
                 return
-            mtype, resp = self.commands[cmd](msg, *cmd_args[1:])
+            mtype, resp = self.commands[cmd].run_command(msg, *cmd_args[1:])
             msg_from = msg['from']
             if mtype == 'chat':
                 mto = msg_from
