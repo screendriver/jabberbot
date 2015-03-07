@@ -73,7 +73,6 @@ class MUCBot(ClientXMPP):
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
-        #                   'slap': self._slap,
         #                   'meal': self._meal,
         #                   'hug': self._hug,
         #                   'kiss': self._kiss,
@@ -215,21 +214,6 @@ You have to provide a subject: vstart <subject>
         self._votes_up.clear()
         self._votes_down.clear()
         return result
-
-    def _slap(self, msg, *args):
-        """Slaps the given user
-
-Simply type: !slap <nick> an it will slap the person
-        """
-        nick = ' '.join(args)
-        if not nick:
-            return 'You have to provide a nick name'
-        dirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = os.path.join(dirpath, 'slaps.txt')
-        with open(filepath) as f:
-            slaps = tuple(slap.strip() for slap in f)
-            slap = random.choice(slaps).format(nick=nick)
-            return '/me {}'.format(slap)
 
     def _meal(self, msg, *args):
         """Displays a 'enjoy your meal' message in a random language"""
