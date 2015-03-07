@@ -1,5 +1,6 @@
 import unittest
 from io import StringIO
+from pathlib import Path
 from unittest.mock import patch
 from jabberbot.commands import taunt
 
@@ -18,6 +19,11 @@ class TestTauntCommand(unittest.TestCase):
 
     def tearDown(self):
         self.stringio.close()
+
+    def test_textfile_exist(self):
+        path = Path('jabberbot/commands/mother_jokes.txt')
+        self.assertTrue(path.exists())
+        self.assertTrue(path.is_file())
 
     def test_with_nickname(self):
         mtype, resp = taunt.run_command(None, 'nickname')
