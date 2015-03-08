@@ -76,7 +76,6 @@ class MUCBot(ClientXMPP):
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
         #                   'hug': self._hug,
-        #                   'kiss': self._kiss,
         #                   'wiki': self._wikipedia,
         #                   'bday': self._birthday
 
@@ -222,22 +221,6 @@ You have to provide a subject: vstart <subject>
             return '/me hugs {}'.format(' '.join(args))
         else:
             return 'Who should I hug?'
-
-    def _kiss(self, msg, *args):
-        """Kisses the given user
-
-You can optionally specify the part of the body: \
-kiss <nick> <part of body>
-        """
-        args_len = len(args)
-        if not args:
-            return 'Who should I kiss?'
-        if args_len == 1:
-            return '/me kisses {} :-*'.format(args[0])
-        elif args_len == 2:
-            return '/me kisses {} on the {} :-*'.format(args[0], args[1])
-        else:
-            return 'Too many arguments'
 
     def _wikipedia(self, msg, *args):
         """Displays a random page from the german Wikipedia

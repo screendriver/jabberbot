@@ -14,11 +14,14 @@ class TestJokeCommand(unittest.TestCase):
 
     def test_run_command(self, mock_open):
         jokes = ['first joke.', 'second joke.']
-        stringio = StringIO()
-        stringio.write(jokes[0] + '\n')
-        stringio.write(jokes[1])
-        stringio.seek(0)
-        mock_open.return_value = stringio
-        mtype, resp = joke.run_command(None)
+        with StringIO() as stringio:
+            stringio.write(jokes[0] + '\n')
+            stringio.write(jokes[1])
+            stringio.seek(0)
+            mock_open.return_value = stringio
+            mtype, resp = joke.run_command(None)
         self.assertEqual(mtype, 'groupchat')
         self.assertIn(resp, jokes)
+        # args = /path/to/jokes.txt
+        args, kwargs = mock_open.call_args
+        self.assertIn('jokes.txt', args[0])

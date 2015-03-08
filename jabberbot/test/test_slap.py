@@ -27,3 +27,6 @@ class TestSlapCommand(unittest.TestCase):
             mtype, resp = slap.run_command(None, 'foo')
         self.assertEqual(mtype, 'groupchat')
         self.assertIn(resp, ['/me ' + s.format(nick='foo') for s in slaps])
+        # args = /path/to/slaps.txt
+        args, kwargs = mock_open.call_args
+        self.assertIn('slaps.txt', args[0])

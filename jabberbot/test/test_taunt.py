@@ -30,9 +30,15 @@ class TestTauntCommand(unittest.TestCase):
         self.assertEqual(mtype, 'groupchat')
         formatted = [t.format(nick="nickname's") for t in self.taunts]
         self.assertIn(resp, formatted)
+        # args = /path/to/mother_jokes.txt
+        args, kwargs = self.mock_open.call_args
+        self.assertIn('mother_jokes.txt', args[0])
 
     def test_without_nickname(self):
         mtype, resp = taunt.run_command(None)
         self.assertEqual(mtype, 'groupchat')
         formatted = [t.format(nick='Deine') for t in self.taunts]
         self.assertIn(resp, formatted)
+        # args = /path/to/mother_jokes.txt
+        args, kwargs = self.mock_open.call_args
+        self.assertIn('mother_jokes.txt', args[0])
