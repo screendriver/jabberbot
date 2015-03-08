@@ -34,6 +34,8 @@ class MUCBot(ClientXMPP):
             module = importlib.import_module('jabberbot.commands.' + name)
             if not hasattr(module, 'run_command'):
                 continue
+            module.trans_client_id = trans_client_id
+            module.trans_client_sec = trans_client_sec
             module_name = module.__name__  # jabberbot.commands.foo
             command_name = module_name.rsplit('.', 1)[1]  # foo
             self.commands[command_name] = module
@@ -73,7 +75,6 @@ class MUCBot(ClientXMPP):
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
-        #                   'meal': self._meal,
         #                   'hug': self._hug,
         #                   'kiss': self._kiss,
         #                   'wiki': self._wikipedia,
@@ -215,14 +216,6 @@ You have to provide a subject: vstart <subject>
         self._votes_down.clear()
         return result
 
-    def _meal(self, msg, *args):
-        """Displays a 'enjoy your meal' message in a random language"""
-        rand_lang = self._get_random_lang()
-        meal = 'Enjoy your meal'
-        translator = Translator(self._trans_client_id, self._trans_client_sec)
-        translated = translator.translate(meal, rand_lang[0])
-        return '{} (translated to {})'.format(translated, rand_lang[1])
-
     def _hug(self, msg, *args):
         """Hugs the given user"""
         if args:
@@ -285,16 +278,6 @@ You can add a nickname: bday <nick>
                                                       ' '.join(args),
                                                       rand_lang[1])
         return '{} (translated to {})'.format(translated, rand_lang[1])
-
-    def _get_random_lang(self):
-        dirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = os.path.join(dirpath, 'lang_codes.txt')
-        with open(filepath) as f:
-            lines = [tuple(line.strip().split(';')) for line in f]
-            langs = dict(lines)
-        lang_code = random.choice(list(langs))
-        country = langs[lang_code]
-        return (lang_code, country)
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
