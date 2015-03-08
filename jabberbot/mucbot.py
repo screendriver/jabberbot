@@ -75,7 +75,6 @@ class MUCBot(ClientXMPP):
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
-        #                   'hug': self._hug,
         #                   'wiki': self._wikipedia,
         #                   'bday': self._birthday
 
@@ -214,13 +213,6 @@ You have to provide a subject: vstart <subject>
         self._votes_up.clear()
         self._votes_down.clear()
         return result
-
-    def _hug(self, msg, *args):
-        """Hugs the given user"""
-        if args:
-            return '/me hugs {}'.format(' '.join(args))
-        else:
-            return 'Who should I hug?'
 
     def _wikipedia(self, msg, *args):
         """Displays a random page from the german Wikipedia

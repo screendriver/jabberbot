@@ -37,7 +37,7 @@ class TestMUCBot(unittest.TestCase):
 
     def test_commands(self):
         commands = self.bot.commands
-        self.assertEqual(len(commands), 8, 'expected 8 commands')
+        self.assertEqual(len(commands), 9, 'expected 9 commands')
         self.assertTrue('chuck' in commands)
 
     def test_registered_plugins(self):
