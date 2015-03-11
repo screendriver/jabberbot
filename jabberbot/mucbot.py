@@ -12,7 +12,6 @@ import jabberbot.commands
 from threading import Timer
 
 import feedparser
-from microsofttranslator import Translator
 from sleekxmpp import ClientXMPP
 
 
@@ -75,8 +74,7 @@ class MUCBot(ClientXMPP):
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
-        #                   'wiki': self._wikipedia,
-        #                   'bday': self._birthday
+        #                   'wiki': self._wikipedia
 
     def start(self, event):
         self.send_presence()
@@ -238,21 +236,6 @@ You can display today's featured article: wiki today
         page = list(pages.values())[0]
         url = self._shorten_url(msg, page['fullurl'])
         return '{}'.format(url)
-
-    def _birthday(self, msg, *args):
-        """Sends a happy birthday in an random language greeting
-
-You can add a nickname: bday <nick>
-        """
-        rand_lang = self._get_random_lang()
-        greet = 'Happy birthday to you'
-        translator = Translator(self._trans_client_id, self._trans_client_sec)
-        translated = translator.translate(greet, rand_lang[0])
-        if args:
-            return '{} @{} (translated to {})'.format(translated,
-                                                      ' '.join(args),
-                                                      rand_lang[1])
-        return '{} (translated to {})'.format(translated, rand_lang[1])
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
