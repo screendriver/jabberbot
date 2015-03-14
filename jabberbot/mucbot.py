@@ -7,11 +7,9 @@ import os
 import pickle
 import pkgutil
 import random
-import requests
 import jabberbot.commands
 from threading import Timer
 
-import feedparser
 from sleekxmpp import ClientXMPP
 
 
@@ -67,14 +65,12 @@ class MUCBot(ClientXMPP):
         #                     self._change_subject)
         # self._timer.start()
         # self._cmds = {'help': self._help,
-        #               'wiki': self._wikipedia
         # self._muc_cmds = {'help': self._help,
         #                   'vstart': self._vote_start,
         #                   'vup': self._vote_up,
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
         #                   'vend': self._vote_end,
-        #                   'wiki': self._wikipedia
 
     def start(self, event):
         self.send_presence()
@@ -211,31 +207,6 @@ You have to provide a subject: vstart <subject>
         self._votes_up.clear()
         self._votes_down.clear()
         return result
-
-    def _wikipedia(self, msg, *args):
-        """Displays a random page from the german Wikipedia
-
-You can display today's featured article: wiki today
-        """
-        if 'today' in args:
-            url = ('https://de.wikipedia.org/w/api.php'
-                   '?action=featuredfeed&feed=featured')
-            feed = feedparser.parse(url)
-            today = feed['items'][-1]
-            return self._shorten_url(msg, today['link'])
-        params = {'action': 'query',
-                  'format': 'json',
-                  'generator': 'random',
-                  'grnnamespace': 0,
-                  'grnlimit': 1,
-                  'prop': 'info',
-                  'inprop': 'url'}
-        req = requests.get('http://de.wikipedia.org/w/api.php', params=params)
-        json = req.json()
-        pages = json['query']['pages']
-        page = list(pages.values())[0]
-        url = self._shorten_url(msg, page['fullurl'])
-        return '{}'.format(url)
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
