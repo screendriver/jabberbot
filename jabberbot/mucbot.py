@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import inspect
 import importlib
 import logging
 import os
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class MUCBot(ClientXMPP):
     _NO_VOTINGS_MESSAGE = 'No votings at the moment'
-    _CMD_PREFIX = '!'
+    cmd_prefix = '!'
 
     def __init__(self, jid, password, muc_room, muc_nick,
                  trans_client_id, trans_client_sec):
@@ -64,9 +63,7 @@ class MUCBot(ClientXMPP):
         # self._timer = Timer(random.randint(3600, 43200),
         #                     self._change_subject)
         # self._timer.start()
-        # self._cmds = {'help': self._help,
-        # self._muc_cmds = {'help': self._help,
-        #                   'vstart': self._vote_start,
+        # self._muc_cmds = {'vstart': self._vote_start,
         #                   'vup': self._vote_up,
         #                   'vdown': self._vote_down,
         #                   'vstat': self._vote_stat,
@@ -97,10 +94,10 @@ class MUCBot(ClientXMPP):
 
     def message(self, msg):
         body = msg['body']
-        if msg['type'] == 'groupchat' and body.startswith(self._CMD_PREFIX):
+        if msg['type'] == 'groupchat' and body.startswith(self.cmd_prefix):
             cmd_args = body.strip().split(' ')
             # Strip command prefix e.g. !foo bar => foo
-            cmd = cmd_args[0][len(self._CMD_PREFIX):]
+            cmd = cmd_args[0][len(self.cmd_prefix):]
             if cmd not in self.commands:
                 logger.warning('Invalid command "%s"', cmd)
                 return
@@ -110,45 +107,9 @@ class MUCBot(ClientXMPP):
                 mto = msg_from
             else:
                 mto = msg_from.bare
-            # Send help always as normal chat
-            # if cmd == 'help':
-            #     self.send_message(mto=msg_from,
-            #                       mbody=resp,
-            #                       mtype='chat')
-            # else:
             self.send_message(mto=mto,
                               mbody=resp,
                               mtype=mtype)
-
-    def _help(self, msg, *args):
-        """Returns a help string containing all commands"""
-        msg_type = msg['type']
-        # MUC provides more commands as normal chat
-        if msg_type in ('normal', 'chat'):
-            cmds = self._cmds
-        elif msg_type == 'groupchat':
-            cmds = self._muc_cmds
-        docs = []
-        if args:  # help <command>
-            cmd = args[0]
-            if len(args) > 1 or cmd not in cmds:
-                return
-            doc = inspect.getdoc(cmds[cmd])
-            docs.append(doc)
-        else:  # help
-            docs.append('Available commands:{}'.format(os.linesep))
-            for cmd in sorted(cmds.keys()):
-                doc = inspect.getdoc(cmds[cmd])
-                if cmd == 'help' or not doc:
-                    continue
-                lines = doc.splitlines()
-                docs.append('{}{}: {}'.format(self._CMD_PREFIX, cmd, lines[0]))
-            bottom = ('{0}Type !help <command name> to get more info '
-                      'about that specific command.').format(os.linesep)
-            docs.append(bottom)
-        src = 'Source code available at http://kurzma.ch/botsrc'
-        docs.append(src)
-        return os.linesep.join(docs)
 
     def _vote_start(self, msg, *args):
         """Starts a voting
