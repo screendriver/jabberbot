@@ -49,25 +49,6 @@ class MUCBot(ClientXMPP):
                 pickle.dump(set(), f)
         self._timer = Timer(random.randint(3600, 43200), self._change_subject)
         self._timer.start()
-        # self._vote_subject = None
-        # self._votes_up = set()
-        # self._votes_down = set()
-        # self._trans_client_id = trans_client_id
-        # self._trans_client_sec = trans_client_sec
-        # self._nicks_filename = 'subject_nicks'
-        # dirpath = os.path.dirname(os.path.realpath(__file__))
-        # filepath = os.path.join(dirpath, self._nicks_filename)
-        # if not os.path.exists(filepath):
-        #     with open(filepath, 'w+b') as f:
-        #         pickle.dump(set(), f)
-        # self._timer = Timer(random.randint(3600, 43200),
-        #                     self._change_subject)
-        # self._timer.start()
-        # self._muc_cmds = {'vstart': self._vote_start,
-        #                   'vup': self._vote_up,
-        #                   'vdown': self._vote_down,
-        #                   'vstat': self._vote_stat,
-        #                   'vend': self._vote_end,
 
     def start(self, event):
         self.send_presence()
@@ -110,64 +91,6 @@ class MUCBot(ClientXMPP):
             self.send_message(mto=mto,
                               mbody=resp,
                               mtype=mtype)
-
-    def _vote_start(self, msg, *args):
-        """Starts a voting
-
-You have to provide a subject: vstart <subject>
-        """
-        if self._vote_subject:
-            return 'A vote is already running'
-        if not args:
-            return 'No subject given. Use vstart <subject>'
-        self._vote_subject = ' '.join(args)
-        return 'Voting started'
-
-    def _vote_up(self, msg, *args):
-        """Vote up for the current voting"""
-        if not self._vote_subject:
-            return self._NO_VOTINGS_MESSAGE
-        user = msg['from'].resource
-        if user in self._votes_up:
-            return 'You already voted {}'.format(user)
-        if user in self._votes_down:
-            self._votes_down.remove(user)
-        self._votes_up.add(user)
-        return '{} voted up'.format(user)
-
-    def _vote_down(self, msg, *args):
-        """Vote down for the current voting"""
-        if not self._vote_subject:
-            return self._NO_VOTINGS_MESSAGE
-        user = msg['from'].resource
-        if user in self._votes_down:
-            return 'You already voted down'
-        if user in self._votes_up:
-            self._votes_up.remove(user)
-        self._votes_down.add(user)
-        return '{} voted down'.format(user)
-
-    def _vote_stat(self, msg, *args):
-        """Displays statistics for the current voting"""
-        if self._vote_subject:
-            return 'Subject: "{}". Votes up: {:d}. Votes down: {:d}'.format(
-                self._vote_subject,
-                len(self._votes_up),
-                len(self._votes_down))
-        return self._NO_VOTINGS_MESSAGE
-
-    def _vote_end(self, msg, *args):
-        """Ends the current voting and shows the result"""
-        if not self._vote_subject:
-            return self._NO_VOTINGS_MESSAGE
-        result = 'Voting "{}" ended. {:d} votes up. {:d} votes down'.format(
-            self._vote_subject,
-            len(self._votes_up),
-            len(self._votes_down))
-        self._vote_subject = None
-        self._votes_up.clear()
-        self._votes_down.clear()
-        return result
 
     def _change_subject(self):
         """Changes randomly the subject of the MUC"""
