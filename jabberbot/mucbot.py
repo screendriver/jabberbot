@@ -6,6 +6,7 @@ import os
 import pickle
 import random
 import requests
+from edeka import Edeka
 from threading import Timer
 from html.parser import HTMLParser
 
@@ -62,7 +63,8 @@ class MUCBot(ClientXMPP):
                           'bday': self._birthday,
                           'matt': self._mattdamon,
                           'muskatnuss': self._muskatnuss,
-                          'joke': self._joke}
+                          'joke': self._joke,
+                          'edeka': Edeka}
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('session_end', self.end)
@@ -370,6 +372,7 @@ You can add a nickname: bday <nick>
         self._timer.start()
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
     parser.add_argument('jid',
                         help='the JID of the bot')
@@ -379,7 +382,10 @@ if __name__ == '__main__':
                         help='the MUC room to join')
     parser.add_argument('muc_nick',
                         help='the nick name that should be used')
-    parser.add_argument()
+    parser.add_argument('trans_client_id',
+                        help='the translator client id')
+    parser.add_argument('trans_client_sec',
+                        help='the translator client secret')
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)-8s %(message)s')
@@ -387,3 +393,6 @@ if __name__ == '__main__':
                  args.trans_client_id, args.trans_client_sec)
     bot.connect()
     bot.process(block=True)
+
+    #print(str(Edeka('', '')))
+    #print(Edeka('', ''))
