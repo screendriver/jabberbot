@@ -21,6 +21,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+test_chatroom.py
 
 # Installer logs
 pip-log.txt
