@@ -373,24 +373,26 @@ You can add a nickname: bday <nick>
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('jid',
-                        help='the JID of the bot')
-    parser.add_argument('pwd',
-                        help='the password for the given JID')
-    parser.add_argument('muc_room',
-                        help='the MUC room to join')
-    parser.add_argument('muc_nick',
-                        help='the nick name that should be used')
-    parser.add_argument('trans_client_id',
-                        help='the translator client id')
-    parser.add_argument('trans_client_sec',
-                        help='the translator client secret')
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('jid',
+    #                     help='the JID of the bot')
+    # parser.add_argument('pwd',
+    #                     help='the password for the given JID')
+    # parser.add_argument('muc_room',
+    #                     help='the MUC room to join')
+    # parser.add_argument('muc_nick',
+    #                     help='the nick name that should be used')
+    # parser.add_argument('trans_client_id',
+    #                     help='the translator client id')
+    # parser.add_argument('trans_client_sec',
+    #                     help='the translator client secret')
+    # args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)-8s %(message)s')
-    bot = MUCBot(args.jid, args.pwd, args.muc_room, args.muc_nick,
-                 args.trans_client_id, args.trans_client_sec)
+    # bot = MUCBot(args.jid, args.pwd, args.muc_room, args.muc_nick,
+    #              args.trans_client_id, args.trans_client_sec)
+    bot = MUCBot('PeterBot@jabber.de', 'peterbot', 'bottestpeter@conference.jabber.de', 'Peter-Bot', '', '')
+
     bot.connect()
     bot.process(block=True)
 
