@@ -7,21 +7,24 @@ from datetime import datetime, date
 _DATE_REGEX = r"\d\d[.]\d\d[.]\d\d"
 _DATE_FORMAT = '%d.%m.%y'
 _DATE_WHOLEDAY_FORMAT = '%A, ' + _DATE_FORMAT
-_EDEKA_URL = "http://simmel.de/wochenmenue/muenchen"
+_EDEKA_URL = 'http://simmel.de/wochenmenue/muenchen'
+
 
 class EdekaMeal:
     def __init__(self, mealHtml):
-        self.meal = mealHtml.find('div', {'class' : 'value'}).text
-        self.price = mealHtml.find('div', {'class' : 'price'}).text
+        self.meal = mealHtml.find('div', {'class': 'value'}).text
+        self.price = mealHtml.find('div', {'class': 'price'}).text
 
     def __str__(self):
         return str(self.meal) + ': ' + str(self.price)
 
+
 class EdekaDay:
     def __init__(self, dayHtml):
-        print(dayHtml)
-        self.date = datetime.strptime(re.findall(_DATE_REGEX, dayHtml.find('h5').text)[0], _DATE_FORMAT)
-        self.meals = self._createMeals(dayHtml.find_all('div', {'class' : 'item'}))
+        found = re.findall(_DATE_REGEX, dayHtml.find('h5').text)[0]
+        self.date = datetime.strptime(found, _DATE_FORMAT)
+        found = dayHtml.find_all('div', {'class': 'item'})
+        self.meals = self._createMeals(found)
 
     def _createMeals(self, mealsArray):
         mealList = []
@@ -35,13 +38,15 @@ class EdekaDay:
             resultString += str(meal) + "\n"
         return resultString
 
+
 class EdekaWeekMenu:
     def __init__(self, weekHtml):
         weekString = weekHtml.find('h4').text
         weekDates = re.findall(_DATE_REGEX, weekString)
         self.startDay = datetime.strptime(weekDates[0], _DATE_FORMAT)
         self.endDay = datetime.strptime(weekDates[1], _DATE_FORMAT)
-        self.days = self._createDays(weekHtml.find_all('div', {'class' : 'market-menu'}))
+        found = weekHtml.find_all('div', {'class': 'market-menu'})
+        self.days = self._createDays(found)
 
     def isInWeek(self, date):
         return self.startDay.date() <= date <= self.endDay.date()
@@ -59,10 +64,13 @@ class EdekaWeekMenu:
         return dayList
 
     def __str__(self):
-        resultString = 'Week from ' + self.startDay.strftime(_DATE_FORMAT) + ' to ' + self.endDay.strftime(_DATE_FORMAT) + "\n"
+        resultString = 'Week from {0} to {1}\n'.format(
+            self.startDay.strftime(_DATE_FORMAT),
+            self.endDay.strftime(_DATE_FORMAT))
         for day in self.days:
             resultString += str(day)
         return resultString
+
 
 def Edeka(message, *args):
     """Return the weekly Edeka lunch menu
@@ -81,11 +89,11 @@ def Edeka(message, *args):
         elif args[0] == 'next' and args[1] == 'week':
             mode = 2
 
-    request  = requests.get(_EDEKA_URL)
+    request = requests.get(_EDEKA_URL)
     data = request.text
     soup = BeautifulSoup(data)
 
-    weeks = soup.find_all("div", { "class" : "element" })
+    weeks = soup.find_all("div", {"class": "element"})
     edekaWeekMenus = []
     for week in weeks:
         edekaWeekMenus += [EdekaWeekMenu(week)]
