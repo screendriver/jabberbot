@@ -21,7 +21,8 @@ setup(
         'microsofttranslator>=0.7',
         'requests>=2.5.1',
         'simplejson>=3.6.5',
-        'sleekxmpp>=1.3.1'
+        'sleekxmpp>=1.3.1',
+        'beautifulsoup4>=4.3.2'
     ],
     package_data={
         'jabberbot': [
