@@ -7,7 +7,6 @@ import pickle
 import pkgutil
 import random
 import jabberbot.commands
-from edeka import Edeka
 from threading import Timer
 from sleekxmpp import ClientXMPP
 

@@ -29,9 +29,13 @@ def run_command(msg, *args):
     else:  # help
         message.append('Available commands:{}'.format(os.linesep))
         for cmd in sorted(docs.keys()):
+            if cmd == 'help':
+                continue
+            doc = docs[cmd]
+            lines = doc.splitlines()
             message.append('{}{}: {}'.format(MUCBot.cmd_prefix,
                                              cmd,
-                                             docs[cmd]))
+                                             lines[0]))
         bottom = ('{0}Type !help <command name> to get more info '
                   'about that specific command.').format(os.linesep)
         message.append(bottom)

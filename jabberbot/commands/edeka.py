@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -7,13 +6,50 @@ from datetime import datetime, date
 _DATE_REGEX = r"\d\d[.]\d\d[.]\d\d"
 _DATE_FORMAT = '%d.%m.%y'
 _DATE_WHOLEDAY_FORMAT = '%A, ' + _DATE_FORMAT
-_EDEKA_URL = 'http://simmel.de/wochenmenue/muenchen'
+menu_url = 'http://simmel.de/wochenmenue/muenchen'
+
+
+def run_command(msg, *args):
+    """Return the weekly Edeka lunch menu
+
+    You can get the meal for the whole week: !edeka week
+    Or even the next week: !edeka next week"""
+    # modes:
+    # 0 -> meal of the day
+    # 1 -> meal of this week
+    # 2 -> meal of next week
+    mode = 0
+    if args:
+        if args[0] == 'week':
+            mode = 1
+        elif args[0] == 'next' and args[1] == 'week':
+            mode = 2
+    request = requests.get(menu_url)
+    data = request.text
+    soup = BeautifulSoup(data)
+    weeks = soup.find_all("div", {"class": "element"})
+    edekaWeekMenus = []
+    for week in weeks:
+        edekaWeekMenus += [EdekaWeekMenu(week)]
+    if mode == 0:
+        today = date.today()
+        for week in edekaWeekMenus:
+            if week.isInWeek(today):
+                return str(week.getDayMenu(today))
+    elif mode == 1:
+        return str(edekaWeekMenus[0])
+    elif mode == 2:
+        try:
+            return str(edekaWeekMenus[1])
+        except IndexError:
+            return 'groupchat', 'Next week\'s menu is not available yet!'
+    return 'groupchat', 'Edeka ist defekt. Techniker ist informiert.'
 
 
 class EdekaMeal:
-    def __init__(self, mealHtml):
-        self.meal = mealHtml.find('div', {'class': 'value'}).text
-        self.price = mealHtml.find('div', {'class': 'price'}).text
+    def __init__(self, meal_html):
+        self.meal = meal_html.find('div', {'class': 'value'}).text
+        self.price = meal_html.find('div', {'class': 'price'}).text
 
     def __str__(self):
         return str(self.meal) + ': ' + str(self.price)
@@ -70,45 +106,3 @@ class EdekaWeekMenu:
         for day in self.days:
             resultString += str(day)
         return resultString
-
-
-def Edeka(message, *args):
-    """Return the weekly Edeka lunch menu
-
-    You can get the meal for the whole week: !edeka week
-    Or even the next week: !edeka next week"""
-
-    # modes:
-    # 0 -> meal of the day
-    # 1 -> meal of this week
-    # 2 -> meal of next week
-    mode = 0
-    if args:
-        if args[0] == 'week':
-            mode = 1
-        elif args[0] == 'next' and args[1] == 'week':
-            mode = 2
-
-    request = requests.get(_EDEKA_URL)
-    data = request.text
-    soup = BeautifulSoup(data)
-
-    weeks = soup.find_all("div", {"class": "element"})
-    edekaWeekMenus = []
-    for week in weeks:
-        edekaWeekMenus += [EdekaWeekMenu(week)]
-
-    if mode == 0:
-        today = date.today()
-        for week in edekaWeekMenus:
-            if week.isInWeek(today):
-                return str(week.getDayMenu(today))
-    elif mode == 1:
-        return str(edekaWeekMenus[0])
-    elif mode == 2:
-        try:
-            return str(edekaWeekMenus[1])
-        except IndexError:
-            return 'Next week\'s menu is not available yet!'
-
-    return 'Edeka ist defekt. Techniker ist informiert.'
