@@ -7,10 +7,10 @@ import pickle
 import pkgutil
 import random
 import jabberbot.commands
+import re
+from edeka import Edeka
 from threading import Timer
-
 from sleekxmpp import ClientXMPP
-
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +111,48 @@ class MUCBot(ClientXMPP):
         self._timer = Timer(interval, self._change_subject)
         self._timer.start()
 
+    def _chickentag(self, msg, *args):
+        """Returns the available chickentag menu
+
+        You can ask for a single meal: !chickentag H12"""
+        chicken = ['H1 - Hühnerfleisch Chop-Suey (mit versch. Gemüse)',
+                   ('H2 - Knusprig gebackenes Hühnerbrustfilet (mit Gemüse, '
+                    'süß-sauer )'),
+                   'H3 - Hühnerbrust in Erdnusssauce (mit versch. Gemüse)',
+                   ('H4 - Gung Pao - Hühnerbrustfilet (in Hoisin Sauce mit '
+                    'Gemüse und Cashew Nüssen, scharf )'),
+                   ('H5 - Hühnerbrust nach Kanton-Art (pikant gewürzt mit '
+                    'Gemüse (scharf))'),
+                   ('H6 - Hühnerbrust in Thai Rot Curry (mit Kokosmilch, '
+                    'Chili und Thai-Basilikum, scharf)'),
+                   ('H7 - gebratenes Hühnerbrustfilet nach Thai Art (mit '
+                    'versch. Gemüse und Thai-Basilikum (scharf))'),
+                   ('H8 - gebratenes Hühnerbrustfilet (mit Zitronengras und '
+                    'Limettenblätter, scharf)'),
+                   'H9 - Hühner Sate Spiesse (mit hausgem. Sauerkraut)',
+                   'H10 - gebratenes Hühnerbrustfilet (mit Zwiebeln)',
+                   'H11 - knusprige Hähnchen (mit Gemüse und Knoblauch)',
+                   ('H12 - knuspriges Hähnchen (mit versch. Gemüse und '
+                    'Thai-Basilikum, scharf)'),
+                   'H13 - Knuspriges Hähnchen (mit Erdnusssauce)',
+                   'H14 - Knuspriges Hähnchen (mit Thai Curry Sauce, scharf)',
+                   ('H15 - Knuspriges Hähnchen nach Thai-Art (mit versch. '
+                    'Gemüse, Thai-Basilikum in Hoisin Sauce, scharf)'),
+                   'H16 - Knuspriges Hähnchen (mit Gemüse)',
+                   ('H17 - Hühnerbrustfilet in Kokosmilch (mit versch. '
+                    'Gemüse, Curry-Sauce)'),
+                   ('H18 - Knuspriges Hähnchen (mit Gemüse, Kokomilch, '
+                    'Curry-Sauce)')]
+        if args:
+            try:
+                return chicken[int(re.findall(r"\d+", args[0])[0]) - 1]
+            except:
+                pass
+        resultString = ''
+        for chickenEntry in chicken:
+            resultString += chickenEntry + "\n"
+        return resultString
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('jid',
@@ -121,7 +163,10 @@ if __name__ == '__main__':
                         help='the MUC room to join')
     parser.add_argument('muc_nick',
                         help='the nick name that should be used')
-    parser.add_argument()
+    parser.add_argument('trans_client_id',
+                        help='the translator client id')
+    parser.add_argument('trans_client_sec',
+                        help='the translator client secret')
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)-8s %(message)s')
