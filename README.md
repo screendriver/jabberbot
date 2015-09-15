@@ -1,4 +1,4 @@
-jabberbot [![Build Status](https://travis-ci.org/ScreenDriver/jabberbot.svg?branch=master)](https://travis-ci.org/ScreenDriver/jabberbot)
+jabberbot [![Build Status](https://travis-ci.org/screendriver/jabberbot.svg?branch=master)](https://travis-ci.org/screendriver/jabberbot)
 ==========
 
 A Jabber Bot for my XMPP service. Written in [Python](https://www.python.org).
