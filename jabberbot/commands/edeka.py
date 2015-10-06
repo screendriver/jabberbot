@@ -35,12 +35,12 @@ def run_command(msg, *args):
         today = date.today()
         for week in edekaWeekMenus:
             if week.isInWeek(today):
-                return str(week.getDayMenu(today))
+                return 'groupchat', str(week.getDayMenu(today))
     elif mode == 1:
-        return str(edekaWeekMenus[0])
+        return 'groupchat', str(edekaWeekMenus[0])
     elif mode == 2:
         try:
-            return str(edekaWeekMenus[1])
+            return 'groupchat', str(edekaWeekMenus[1])
         except IndexError:
             return 'groupchat', 'Next week\'s menu is not available yet!'
     return 'groupchat', 'Edeka ist defekt. Techniker ist informiert.'
