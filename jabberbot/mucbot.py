@@ -7,6 +7,7 @@ import pickle
 import pkgutil
 import random
 import jabberbot.commands
+import jabberbot.mucoffline
 from threading import Timer
 from sleekxmpp import ClientXMPP
 
@@ -21,10 +22,11 @@ class MUCBot(ClientXMPP):
                  trans_client_id, trans_client_sec):
         super().__init__(jid, password)
         self.commands = {}
+        self.mucofflines = []
         self._muc_room = muc_room
         self._muc_nick = muc_nick
-        cmdpath = jabberbot.commands.__path__
-        for module_finder, name, ispkg in pkgutil.iter_modules(cmdpath):
+        path = jabberbot.commands.__path__
+        for module_finder, name, ispkg in pkgutil.iter_modules(path):
             module = importlib.import_module('jabberbot.commands.' + name)
             if not hasattr(module, 'run_command'):
                 continue
@@ -33,12 +35,20 @@ class MUCBot(ClientXMPP):
             module_name = module.__name__  # jabberbot.commands.foo
             command_name = module_name.rsplit('.', 1)[1]  # foo
             self.commands[command_name] = module
+        path = jabberbot.mucoffline.__path__
+        for module_finder, name, ispkg in pkgutil.iter_modules(path):
+            module = importlib.import_module('jabberbot.mucoffline.' + name)
+            if not hasattr(module, 'muc_got_offline'):
+                continue
+            self.mucofflines.append(module)
         self.register_plugin('xep_0045')
         self.add_event_handler('session_start', self.start)
         self.add_event_handler('session_end', self.end)
         self.add_event_handler('message', self.message)
         self.add_event_handler('muc::{}::got_online'.format(muc_room),
                                self.muc_got_online)
+        self.add_event_handler('muc::{}::got_offline'.format(muc_room),
+                               self.muc_got_offline)
         self._nicks_filename = 'subject_nicks'
         dirpath = os.path.dirname(os.path.realpath(__file__))
         filepath = os.path.join(dirpath, self._nicks_filename)
@@ -70,6 +80,15 @@ class MUCBot(ClientXMPP):
             if nick not in nicks:
                 logger.debug('Adding %s to %s', nick, self._nick_filename)
             pickle.dump(nicks, f)
+
+    def muc_got_offline(self, presence):
+        nick = presence['muc']['nick']
+        for module in self.mucofflines:
+            message = module.muc_got_offline(nick)
+            if message is not None:
+                self.send_message(mto=presence.get_from().bare,
+                                  mbody=message,
+                                  mtype='groupchat')
 
     def message(self, msg):
         body = msg['body']
